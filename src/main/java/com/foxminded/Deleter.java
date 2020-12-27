@@ -10,14 +10,14 @@ public class Deleter {
             String queryForStudentsTable = "DELETE FROM students WHERE student_id = ?";
             String queryForStudentCoursesTable = "DELETE FROM student_courses WHERE student_id = ?";
             DBWorker dataSource = new DBWorker();
-            PreparedStatement preparedStatementForStudentsTable =
-                    dataSource.getConnection().prepareStatement(queryForStudentsTable);
-            preparedStatementForStudentsTable.setInt(1,studentId);
-            preparedStatementForStudentsTable.execute();
             PreparedStatement preparedStatementForStudentCoursesTable =
                     dataSource.getConnection().prepareStatement(queryForStudentCoursesTable);
             preparedStatementForStudentCoursesTable.setInt(1,studentId);
             preparedStatementForStudentCoursesTable.execute();
+            PreparedStatement preparedStatementForStudentsTable =
+                    dataSource.getConnection().prepareStatement(queryForStudentsTable);
+            preparedStatementForStudentsTable.setInt(1,studentId);
+            preparedStatementForStudentsTable.execute();
         }catch (SQLException e){
             e.printStackTrace();
         }
