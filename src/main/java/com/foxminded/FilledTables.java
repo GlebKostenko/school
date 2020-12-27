@@ -15,11 +15,11 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class filledTables {
+public class FilledTables {
 
-    private String fileNames = "names.txt";
-    private String fileSurnames = "surnames.txt";
-    private String fileCoursesDescription = "CoursesDescription.txt";
+    private final static String fileNames = "names.txt";
+    private final static String fileSurnames = "surnames.txt";
+    private final static String fileCoursesDescription = "CoursesDescription.txt";
     public void fillTableOfGroups(){
         try {
             String INSERT_NEW = "INSERT INTO sql_jdbc_school.public.groups VALUES (?,?)";
@@ -93,7 +93,7 @@ public class filledTables {
         DBWorker worker = new DBWorker();
         String query = "SELECT * FROM students";
         try {
-            String INSERT_NEW = "INSERT INTO student_and_their_courses(student_id,course_id) VALUES (?,?)";
+            String INSERT_NEW = "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)";
             PreparedStatement preparedStatementForCreatingNewCourse =
                     worker.getConnection().prepareStatement(INSERT_NEW);
             Statement statement = worker.getConnection().createStatement();
