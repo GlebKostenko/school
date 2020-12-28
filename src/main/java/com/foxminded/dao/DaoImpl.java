@@ -1,4 +1,4 @@
-package com.foxminded;
+package com.foxminded.dao;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,17 +10,94 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class TablesCreator {
-
+public class DaoImpl implements DaoLayer{
     private final static String fileNames = "names.txt";
     private final static String fileSurnames = "surnames.txt";
     private final static String fileCoursesDescription = "CoursesDescription.txt";
-    public void fillTableOfGroups(){
+
+    @Override
+    public void addNewStudent(String firstName, String lastName) {
+        try {
+            String query = "INSERT INTO students (first_name,last_name) VALUES (?,?)";
+            DBWorker dataSource = new DBWorker();
+            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
+            preparedStatement.setString(1,firstName);
+            preparedStatement.setString(2,lastName);
+            preparedStatement.execute();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void addStudentToCourse(int studentId, int courseId) {
+        try {
+            String query = "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)";
+            DBWorker dataSource = new DBWorker();
+            PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
+            preparedStatement.setInt(1,studentId);
+            preparedStatement.setInt(2,courseId);
+            preparedStatement.execute();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void deleteStudentById(int studentId) {
+        try {
+            String queryForStudentsTable = "DELETE FROM students WHERE student_id = ?";
+            String queryForStudentCoursesTable = "DELETE FROM student_courses WHERE student_id = ?";
+            DBWorker dataSource = new DBWorker();
+            PreparedStatement preparedStatementForStudentCoursesTable =
+                    dataSource.getConnection().prepareStatement(queryForStudentCoursesTable);
+            preparedStatementForStudentCoursesTable.setInt(1,studentId);
+            preparedStatementForStudentCoursesTable.execute();
+            PreparedStatement preparedStatementForStudentsTable =
+                    dataSource.getConnection().prepareStatement(queryForStudentsTable);
+            preparedStatementForStudentsTable.setInt(1,studentId);
+            preparedStatementForStudentsTable.execute();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void removeStudentFromCourse(int studentId) {
+        try {
+            String query = "SELECT course_id FROM courses WHERE student_id = ?";
+            DBWorker dataSource = new DBWorker();
+            PreparedStatement preparedStatement =
+                    dataSource.getConnection().prepareStatement(query);
+            preparedStatement.setInt(1,studentId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int courseId = resultSet.getInt(1);
+            String queryForDelete = "DELETE FROM student_courses WHERE student_id = ? AND course_id = ?";
+            PreparedStatement preparedStatement1 = dataSource.getConnection().prepareStatement(queryForDelete);
+            preparedStatement1.setInt(studentId,courseId);
+            preparedStatement1.execute();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void save(){
+        saveGroupsTable();
+        saveStudentsTable();
+        saveCoursesTable();
+        saveStudentCoursesTable();
+    }
+
+    @Override
+    public void saveGroupsTable() {
         try {
             String query1 = "INSERT INTO sql_jdbc_school.public.groups VALUES (?,?)";
             DBWorker dataSource = new DBWorker();
@@ -41,7 +118,8 @@ public class TablesCreator {
         }
     }
 
-    public void fillTableOfStudents() throws URISyntaxException, IOException {
+    @Override
+    public void saveStudentsTable() {
         try {
             String query1 = "INSERT INTO students VALUES (?,?,?,?)";
             DBWorker dataSource = new DBWorker();
@@ -59,12 +137,13 @@ public class TablesCreator {
                 preparedStatement.setString(4, randomSurname);
                 preparedStatement.execute();
             }
-        }catch (SQLException e){
+        }catch (SQLException  | URISyntaxException  | IOException e){
             e.printStackTrace();
         }
     }
 
-    public void fillTableOfCourses(){
+    @Override
+    public void saveCoursesTable() {
         try {
             String query1 = "INSERT INTO courses VALUES (?,?,?)";
             DBWorker dataSource = new DBWorker();
@@ -86,10 +165,10 @@ public class TablesCreator {
         }catch (SQLException  | URISyntaxException | IOException e){
             e.printStackTrace();
         }
-
     }
 
-    public void fillTableOfStudentsCourses(){
+    @Override
+    public void saveStudentCoursesTable() {
         DBWorker dataSource = new DBWorker();
         String query = "SELECT * FROM students";
         try {
@@ -141,7 +220,39 @@ public class TablesCreator {
         } else {
             return new File(resource.toURI());
         }
+    }
 
+    @Override
+    public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
+        DBWorker dbWorker = new DBWorker();
+        String query = "SELECT gr.group_name FROM students st " +
+                "LEFT JOIN sql_jdbc_school.public.groups gr ON gr.group_id=st.group_id" +
+                " GROUP BY gr.group_id" +
+                " HAVING COUNT(st.student_id) <= ?";
+        PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(query);
+        preparedStatement.setInt(1,count);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<String> result = new ArrayList<>();
+        while (resultSet.next()){
+            result.add(resultSet.getString(1));
+        }
+        return result;
+    }
+
+    @Override
+    public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException {
+        DBWorker dbWorker = new DBWorker();
+        String query = "SELECT st.first_name,st.last_name FROM student_courses sc " +
+                "LEFT JOIN students st ON st.student_id = sc.student_id " +
+                "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_name = ?";
+        PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(query);
+        preparedStatement.setString(1,courseName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<String> result = new ArrayList<>();
+        while (resultSet.next()){
+            result.add(resultSet.getString(1) + " " + resultSet.getString(2));
+        }
+        return result;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.foxminded;
+package com.foxminded.dao;
 
 import org.postgresql.Driver;
 
