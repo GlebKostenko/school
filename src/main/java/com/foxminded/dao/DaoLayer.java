@@ -7,7 +7,7 @@ public interface DaoLayer {
     void addNewStudent(String firstName, String lastName);
     void addStudentToCourse(int studentId,int courseId);
     void deleteStudentById(int studentId);
-    void removeStudentFromCourse(int studentId);
+    String  removeStudentFromCourse(int studentId);
     void save();
     void saveGroupsTable();
     void saveStudentsTable();

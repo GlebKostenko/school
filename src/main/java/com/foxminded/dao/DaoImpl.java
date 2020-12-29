@@ -69,7 +69,7 @@ public class DaoImpl implements DaoLayer{
     }
 
     @Override
-    public void removeStudentFromCourse(int studentId) {
+    public String removeStudentFromCourse(int studentId) {
         try {
             String query = "SELECT course_id FROM courses WHERE student_id = ?";
             DBWorker dataSource = new DBWorker();
@@ -83,8 +83,10 @@ public class DaoImpl implements DaoLayer{
             PreparedStatement preparedStatement1 = dataSource.getConnection().prepareStatement(queryForDelete);
             preparedStatement1.setInt(studentId,courseId);
             preparedStatement1.execute();
+            return resultSet.getString(2);
         }catch (SQLException e){
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -226,9 +228,9 @@ public class DaoImpl implements DaoLayer{
     public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
         DBWorker dbWorker = new DBWorker();
         String query = "SELECT gr.group_name FROM students st " +
-                "LEFT JOIN sql_jdbc_school.public.groups gr ON gr.group_id=st.group_id" +
+                "RIGHT JOIN sql_jdbc_school.public.groups gr ON gr.group_id=st.group_id" +
                 " GROUP BY gr.group_id" +
-                " HAVING COUNT(st.student_id) <= ?";
+                " HAVING COUNT(st.student_id) <= ?  ";
         PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(query);
         preparedStatement.setInt(1,count);
         ResultSet resultSet = preparedStatement.executeQuery();
