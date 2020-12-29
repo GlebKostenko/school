@@ -67,7 +67,7 @@ public class Main {
                 System.out.println("Enter student id:");
                 System.out.println("Student was successfully removed from "
                         + daoImpl.removeStudentFromCourse(Integer.parseInt(number_query.nextLine()))
-                        + "course\n");
+                        + " course\n");
             }else if(action.equals("5")){
                 daoImpl.save();
                 System.out.println("It was saved");

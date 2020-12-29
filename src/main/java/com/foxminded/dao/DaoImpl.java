@@ -71,7 +71,7 @@ public class DaoImpl implements DaoLayer{
     @Override
     public String removeStudentFromCourse(int studentId) {
         try {
-            String query = "SELECT course_id FROM courses WHERE student_id = ?";
+            String query = "SELECT course_id FROM student_courses WHERE student_id = ?";
             DBWorker dataSource = new DBWorker();
             PreparedStatement preparedStatement =
                     dataSource.getConnection().prepareStatement(query);
@@ -81,9 +81,15 @@ public class DaoImpl implements DaoLayer{
             int courseId = resultSet.getInt(1);
             String queryForDelete = "DELETE FROM student_courses WHERE student_id = ? AND course_id = ?";
             PreparedStatement preparedStatement1 = dataSource.getConnection().prepareStatement(queryForDelete);
-            preparedStatement1.setInt(studentId,courseId);
+            preparedStatement1.setInt(1,studentId);
+            preparedStatement1.setInt(2,courseId);
             preparedStatement1.execute();
-            return resultSet.getString(2);
+            String query1 = "SELECT course_name FROM courses WHERE course_id = ?";
+            PreparedStatement preparedStatement2 = dataSource.getConnection().prepareStatement(query1);
+            preparedStatement2.setInt(1,courseId);
+            ResultSet resultSet1 = preparedStatement2.executeQuery();
+            resultSet1.next();
+            return resultSet1.getString(1);
         }catch (SQLException e){
             e.printStackTrace();
             return null;
