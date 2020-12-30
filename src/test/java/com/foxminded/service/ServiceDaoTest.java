@@ -1,10 +1,19 @@
 package com.foxminded.service;
 
 import com.foxminded.dao.DaoLayer;
+import com.foxminded.dao.DataSource;
+import org.apache.ibatis.jdbc.ScriptRunner;
+import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 class ServiceDaoTest {
-
     @Mock
     private DaoLayer dataSource;
     private ServiceDao serviceDao;

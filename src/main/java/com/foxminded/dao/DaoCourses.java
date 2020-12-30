@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 public class DaoCourses {
     public String showAllCourses() throws SQLException {
-        DBWorker dataSource = new DBWorker();
+        DataSource dataSource = new DataSource();
         String query = "SELECT course_name FROM courses";
         Statement statement = dataSource.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery(query);

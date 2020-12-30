@@ -1,5 +1,6 @@
 package com.foxminded.formatter;
 
+import com.foxminded.dao.DataSource;
 import com.foxminded.service.ServiceDao;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

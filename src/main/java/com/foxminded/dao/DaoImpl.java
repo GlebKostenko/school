@@ -25,7 +25,7 @@ public class DaoImpl implements DaoLayer{
     public void addNewStudent(String firstName, String lastName) {
         try {
             String query = "INSERT INTO students (first_name,last_name) VALUES (?,?)";
-            DBWorker dataSource = new DBWorker();
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
             preparedStatement.setString(1,firstName);
             preparedStatement.setString(2,lastName);
@@ -39,7 +39,7 @@ public class DaoImpl implements DaoLayer{
     public void addStudentToCourse(int studentId, int courseId) {
         try {
             String query = "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)";
-            DBWorker dataSource = new DBWorker();
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
             preparedStatement.setInt(1,studentId);
             preparedStatement.setInt(2,courseId);
@@ -54,7 +54,7 @@ public class DaoImpl implements DaoLayer{
         try {
             String queryForStudentsTable = "DELETE FROM students WHERE student_id = ?";
             String queryForStudentCoursesTable = "DELETE FROM student_courses WHERE student_id = ?";
-            DBWorker dataSource = new DBWorker();
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatementForStudentCoursesTable =
                     dataSource.getConnection().prepareStatement(queryForStudentCoursesTable);
             preparedStatementForStudentCoursesTable.setInt(1,studentId);
@@ -72,7 +72,7 @@ public class DaoImpl implements DaoLayer{
     public String removeStudentFromCourse(int studentId) {
         try {
             String query = "SELECT course_id FROM student_courses WHERE student_id = ?";
-            DBWorker dataSource = new DBWorker();
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement =
                     dataSource.getConnection().prepareStatement(query);
             preparedStatement.setInt(1,studentId);
@@ -107,8 +107,8 @@ public class DaoImpl implements DaoLayer{
     @Override
     public void saveGroupsTable() {
         try {
-            String query1 = "INSERT INTO sql_jdbc_school.public.groups VALUES (?,?)";
-            DBWorker dataSource = new DBWorker();
+            String query1 = "INSERT INTO TEST.PUBLIC.GROUPS (group_name) VALUES (?)";
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query1);
             Random r = new Random();
             for(int i = 0; i < 10; ++i) {
@@ -117,8 +117,7 @@ public class DaoImpl implements DaoLayer{
                 String twoRandomsLetters = Character.toString(firstRandomLetter) + Character.toString(secondRandomLetter);
                 String twoRandomDigits = (int) (Math.random() * 10) + "" + (int) (Math.random() * 10);
                 String randomNameOfGroup = String.format("%s-%s", twoRandomsLetters, twoRandomDigits);
-                preparedStatement.setInt(1, i + 1);
-                preparedStatement.setString(2, randomNameOfGroup);
+                preparedStatement.setString(1, randomNameOfGroup);
                 preparedStatement.execute();
             }
         }catch (SQLException e){
@@ -129,8 +128,8 @@ public class DaoImpl implements DaoLayer{
     @Override
     public void saveStudentsTable() {
         try {
-            String query1 = "INSERT INTO students VALUES (?,?,?,?)";
-            DBWorker dataSource = new DBWorker();
+            String query1 = "INSERT INTO students(group_id,first_name,last_name) VALUES (?,?,?)";
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query1);
             List<String> names = Files.lines(Paths.get(getFileFromResource(fileNames).getPath())).collect(Collectors.toList());
             List<String> surnames = Files.lines(Paths.get(getFileFromResource(fileSurnames).getPath())).collect(Collectors.toList());
@@ -139,10 +138,9 @@ public class DaoImpl implements DaoLayer{
                 int randomNumberOFStudentsInGroup = 10 + (int) (Math.random() * 21);
                 String randomName = names.get((int) (Math.random() * 20));
                 String randomSurname = surnames.get((int) (Math.random() * 20));
-                preparedStatement.setInt(1, i + 1);
-                preparedStatement.setInt(2, randomNumberOfGroup);
-                preparedStatement.setString(3, randomName);
-                preparedStatement.setString(4, randomSurname);
+                preparedStatement.setInt(1, randomNumberOfGroup);
+                preparedStatement.setString(2, randomName);
+                preparedStatement.setString(3, randomSurname);
                 preparedStatement.execute();
             }
         }catch (SQLException  | URISyntaxException  | IOException e){
@@ -153,8 +151,8 @@ public class DaoImpl implements DaoLayer{
     @Override
     public void saveCoursesTable() {
         try {
-            String query1 = "INSERT INTO courses VALUES (?,?,?)";
-            DBWorker dataSource = new DBWorker();
+            String query1 = "INSERT INTO courses(course_name,course_description) VALUES (?,?)";
+            DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement =
                     dataSource.getConnection().prepareStatement(query1);
             List<String> coursesDescription = Files.lines(Paths
@@ -165,9 +163,8 @@ public class DaoImpl implements DaoLayer{
                 int startOfDesc = fullInfAboutCourse.indexOf('(');
                 String nameOfCourse = fullInfAboutCourse.substring(0,startOfDesc);
                 String descriptionOfCourse = fullInfAboutCourse.substring(startOfDesc + 1,fullInfAboutCourse.length() - 1);
-                preparedStatement.setInt(1,i+1);
-                preparedStatement.setString(2,nameOfCourse);
-                preparedStatement.setString(3,descriptionOfCourse);
+                preparedStatement.setString(1,nameOfCourse);
+                preparedStatement.setString(2,descriptionOfCourse);
                 preparedStatement.execute();
             }
         }catch (SQLException  | URISyntaxException | IOException e){
@@ -177,7 +174,7 @@ public class DaoImpl implements DaoLayer{
 
     @Override
     public void saveStudentCoursesTable() {
-        DBWorker dataSource = new DBWorker();
+        DataSource dataSource = new DataSource();
         String query = "SELECT * FROM students";
         try {
             String query1 = "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)";
@@ -232,12 +229,12 @@ public class DaoImpl implements DaoLayer{
 
     @Override
     public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
-        DBWorker dbWorker = new DBWorker();
+        DataSource dataSource = new DataSource();
         String query = "SELECT gr.group_name FROM students st " +
                 "RIGHT JOIN sql_jdbc_school.public.groups gr ON gr.group_id=st.group_id" +
                 " GROUP BY gr.group_id" +
                 " HAVING COUNT(st.student_id) <= ?  ";
-        PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(query);
+        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
         preparedStatement.setInt(1,count);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<String> result = new ArrayList<>();
@@ -249,11 +246,11 @@ public class DaoImpl implements DaoLayer{
 
     @Override
     public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException {
-        DBWorker dbWorker = new DBWorker();
+        DataSource dataSource = new DataSource();
         String query = "SELECT st.first_name,st.last_name FROM student_courses sc " +
                 "LEFT JOIN students st ON st.student_id = sc.student_id " +
                 "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_name = ?";
-        PreparedStatement preparedStatement = dbWorker.getConnection().prepareStatement(query);
+        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
         preparedStatement.setString(1,courseName);
         ResultSet resultSet = preparedStatement.executeQuery();
         List<String> result = new ArrayList<>();
