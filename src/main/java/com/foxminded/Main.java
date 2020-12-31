@@ -1,18 +1,18 @@
-package com.foxminded.Main;
+package com.foxminded;
 
-import com.foxminded.dao.*;
+import com.foxminded.dao.DaoImpl;
+import com.foxminded.dao.DaoLayer;
 import com.foxminded.formatter.FormatterData;
-import com.foxminded.service.ServiceDao;
-import java.sql.ResultSet;
+import com.foxminded.service.DaoController;
+
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
         DaoLayer daoImpl = new DaoImpl();
-        ServiceDao serviceDao = new ServiceDao(daoImpl);
-        FormatterData formatterData = new FormatterData(serviceDao);
+        DaoController daoController = new DaoController(daoImpl);
+        FormatterData formatterData = new FormatterData(daoController);
         String query = "Enter your query(select number):\n"+
                 "1.Add new student\n"+
                 "2.Add student to course\n" +
@@ -26,50 +26,46 @@ public class Main {
             Scanner number_query = new Scanner(System.in);
             String action = number_query.nextLine();
             if(action.equals("1")){
-                System.out.println("Enter first:");
+                System.out.println("Enter first name:");
                 String firstName = number_query.nextLine();
                 System.out.println("Enter last name:");
                 String lastName = number_query.nextLine();
-                daoImpl.addNewStudent(firstName,lastName);
-                System.out.println("Student was successfully added to course");
+                daoController.addNewStudent(firstName,lastName);
+                System.out.println("Student was successfully added");
             }else if(action.equals("2")){
                 System.out.println("Would you like to see a list of students?(Print Y if you want and N if you don't)");
                 if (number_query.nextLine().equals("Y")){
-                    DaoStudent daoStudent = new DaoStudent();
-                    System.out.println(daoStudent.showAllStudents());
+                    System.out.println(formatterData.showAllStudents());
                 }
                 System.out.println("Would you like to see a list of courses?(Print Y if you want and N if you don't)");
                 if (number_query.nextLine().equals('Y')){
-                    DaoCourses daoCourses = new DaoCourses();
-                    System.out.println(daoCourses.showAllCourses());
+                    System.out.println(formatterData.showAllCourses());
                 }
                 System.out.println("Enter student id:");
                 int student_id = Integer.parseInt(number_query.nextLine());
                 System.out.println("Enter course id:");
                 int course_id = Integer.parseInt(number_query.nextLine());
-                daoImpl.addStudentToCourse(student_id,course_id);
+                daoController.addStudentToCourse(student_id,course_id);
                 System.out.println("Student was successfully added to course");
             }else if(action.equals("3")){
                 System.out.println("Would you like to see a list of students?(Print Y if you want and N if you don't)");
                 if (number_query.nextLine().equals("Y")){
-                    DaoStudent daoStudent = new DaoStudent();
-                    System.out.println(daoStudent.showAllStudents());
+                    System.out.println(formatterData.showAllStudents());
                 }
                 System.out.println("Enter student id:");
-                daoImpl.deleteStudentById(Integer.parseInt(number_query.nextLine()));
+                daoController.deleteStudentById(Integer.parseInt(number_query.nextLine()));
                 System.out.println("Student was successfully deleted");
             }else if(action.equals("4")){
                 System.out.println("Would you like to see a list of students?(Print Y if you want and N if you don't)");
                 if (number_query.nextLine().equals("Y")){
-                    DaoStudent daoStudent = new DaoStudent();
-                    System.out.println(daoStudent.showAllStudents());
+                    System.out.println(formatterData.showAllStudents());
                 }
                 System.out.println("Enter student id:");
                 System.out.println("Student was successfully removed from "
-                        + daoImpl.removeStudentFromCourse(Integer.parseInt(number_query.nextLine()))
+                        + daoController.removeStudentFromCourse(Integer.parseInt(number_query.nextLine()))
                         + " course\n");
             }else if(action.equals("5")){
-                daoImpl.save();
+                daoController.save();
                 System.out.println("It was saved");
             }else if(action.equals("6")){
                 System.out.println("Enter count:");
@@ -77,8 +73,7 @@ public class Main {
             }else if(action.equals("7")){
                 System.out.println("Would you like to see a list of courses?(Print Y if you want and N if you don't)");
                 if (number_query.nextLine().equals("Y")){
-                    DaoCourses daoCourses = new DaoCourses();
-                    System.out.println(daoCourses.showAllCourses());
+                    System.out.println(formatterData.showAllCourses());
                 }
                 System.out.println("Enter course name:");
                 System.out.println(formatterData.findStudentsRelatedToCourse(number_query.nextLine()));
