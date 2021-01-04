@@ -8,22 +8,14 @@ import com.foxminded.dao.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
-public class DaoController {
+public class StudentService {
     private DaoLayer dataSource;
-    public DaoController(DaoLayer dataSource){
+    public StudentService(DaoLayer dataSource){
         this.dataSource = dataSource;
     }
 
     public void fillTables(){
         dataSource.save();
-    }
-
-    public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
-        return dataSource.searchGroupsWithLessOrEqualsStudentCount(count);
-    }
-
-    public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException{
-        return dataSource.findStudentsRelatedToCourse(courseName);
     }
 
     public void save(){
