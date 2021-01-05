@@ -12,9 +12,14 @@ public class GroupsController {
     public GroupsController(GroupsService groupsService){
         this.groupsService = groupsService;
     }
+
     public String GroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
         return groupsService.searchGroupsWithLessOrEqualsStudentCount(count).stream().map(x ->{
             return x + "\n";
         }).collect(Collectors.joining());
+    }
+
+    public void saveGroupsTable() {
+        groupsService.saveGroupsTable();
     }
 }

@@ -1,10 +1,6 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoImpl;
-import com.foxminded.dao.DaoLayer;
-import com.foxminded.service.CoursesService;
 import com.foxminded.service.GroupsService;
-import com.foxminded.service.StudentService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

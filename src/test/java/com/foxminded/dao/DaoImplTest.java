@@ -1,21 +1,19 @@
 package com.foxminded.dao;
 
-import org.apache.ibatis.jdbc.ScriptRunner;
-import org.junit.Before;
-import org.junit.jupiter.api.*;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnit;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import javax.swing.plaf.nimbus.State;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.Reader;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 class DaoImplTest {
-    private DaoImpl dao = new DaoImpl();
+    private DaoStudent daoStudent = new DaoStudent();
+
+
     @BeforeEach
     void createTables()throws Exception{
         String query= "create table groups(" +
@@ -44,8 +42,14 @@ class DaoImplTest {
         statement.execute(query1);
         statement.execute(query2);
         statement.execute(query3);
-        DaoImpl dao = new DaoImpl();
-        dao.save();
+        DaoGroups daoGroups = new DaoGroups();
+        daoGroups.saveGroupsTable();
+        DaoStudent daoStudent = new DaoStudent();
+        daoStudent.saveStudentsTable();
+        DaoCourses daoCourses = new DaoCourses();
+        daoCourses.saveCoursesTable();
+        DaoStudentCourses daoStudentCourses = new DaoStudentCourses();
+        daoStudentCourses.saveStudentCoursesTable();
     }
     @AfterEach
     void deleteTables()throws Exception{
@@ -62,7 +66,7 @@ class DaoImplTest {
     }
     @Test
     void addNewStudent() throws SQLException {
-        dao.addNewStudent("Пётр","Капица");
+        daoStudent.addNewStudent("Пётр","Капица");
         String query = "SELECT COUNT(1) FROM students " +
                 "WHERE first_name = 'Пётр' AND last_name = 'Капица'";
         DataSource dataSource = new DataSource();
@@ -74,7 +78,7 @@ class DaoImplTest {
 
     @Test
     void addStudentToCourse() throws SQLException{
-        dao.addStudentToCourse(1,1);
+        daoStudent.addStudentToCourse(1,1);
         String query = "SELECT COUNT(1) FROM student_courses " +
                 "WHERE student_id=1 AND course_id = 1";
         DataSource dataSource = new DataSource();
@@ -86,7 +90,7 @@ class DaoImplTest {
 
     @Test
     void deleteStudentById() throws SQLException{
-        dao.deleteStudentById(1);
+        daoStudent.deleteStudentById(1);
         String query = "SELECT COUNT(1) FROM students " +
                 "WHERE student_id=1";
         String query1 = "SELECT * FROM students";
@@ -99,7 +103,7 @@ class DaoImplTest {
 
     @Test
     void removeStudentFromCourse() throws Exception{
-        String courseName = dao.removeStudentFromCourse(1);
+        String courseName = daoStudent.removeStudentFromCourse(1);
         String query = "SELECT COUNT(1) FROM student_courses sc LEFT JOIN courses cs ON cs.course_id = sc.course_id " +
                 "WHERE student_id=1 AND course_name = ?";
         DataSource dataSource = new DataSource();
