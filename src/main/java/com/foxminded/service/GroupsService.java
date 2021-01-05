@@ -17,7 +17,7 @@ public class GroupsService {
     public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
         DataSource dataSource = new DataSource();
         String query = "SELECT gr.group_name FROM students st " +
-                "RIGHT JOIN sql_jdbc_school.public.groups gr ON gr.group_id=st.group_id" +
+                "RIGHT JOIN groups gr ON gr.group_id=st.group_id" +
                 " GROUP BY gr.group_id" +
                 " HAVING COUNT(st.student_id) <= ?  ";
         PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);

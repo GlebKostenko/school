@@ -23,6 +23,7 @@ public class StudentService {
     public void deleteStudentById(int studentId){
         daoStudent.deleteStudentById(studentId);
     }
+
     public String removeStudentFromCourse(int studentId){
         return daoStudent.removeStudentFromCourse(studentId);
     }

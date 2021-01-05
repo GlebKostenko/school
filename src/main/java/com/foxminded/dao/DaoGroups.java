@@ -10,7 +10,7 @@ import java.util.Random;
 public class DaoGroups {
     public void saveGroupsTable() {
         try {
-            String insertionInaGroupsTable = "INSERT INTO TEST.PUBLIC.GROUPS (group_name) VALUES (?)";
+            String insertionInaGroupsTable = "INSERT INTO GROUPS (group_name) VALUES (?)";
             DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(insertionInaGroupsTable);
             Random r = new Random();

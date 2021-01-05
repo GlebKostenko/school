@@ -1,5 +1,6 @@
 package com.foxminded.controller;
 
+import com.foxminded.dao.DaoCourses;
 import com.foxminded.service.CoursesService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -10,14 +11,21 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
 class CoursesControllerTest {
-    @Mock
-    private CoursesService coursesService;
+    CoursesService coursesService = mock(CoursesService.class);
     private CoursesController coursesController;
     CoursesControllerTest(){
-        MockitoAnnotations.initMocks(this);
         coursesController = new CoursesController(coursesService);
+    }
+
+    @Test
+    void saveCoursesTable() {
+        doNothing().when(coursesService).saveCoursesTable();
+        coursesController.saveCoursesTable();
+        verify(coursesService,times(1)).saveCoursesTable();
     }
 
     @Test
