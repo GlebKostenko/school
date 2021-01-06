@@ -1,16 +1,11 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoCourses;
-import com.foxminded.dao.DaoStudent;
 import com.foxminded.dao.DataSource;
-import com.foxminded.service.CoursesService;
-import com.foxminded.service.GroupsService;
 import com.foxminded.service.StudentService;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.stream.Collectors;
 
 public class StudentController {
     private StudentService studentService;
@@ -19,16 +14,7 @@ public class StudentController {
     }
 
     public String showAllStudents() throws SQLException {
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * FROM students");
-        StringBuilder result = new StringBuilder();
-        while (resultSet.next()){
-            result.append(resultSet.getInt(1) +" "
-                    + resultSet.getString(3) +" "
-                    + resultSet.getString(4) + "\n");
-        }
-        return result.toString();
+        return studentService.showAllStudents();
     }
 
     public void saveStudentsTable(){

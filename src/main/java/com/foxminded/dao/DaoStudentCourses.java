@@ -9,13 +9,12 @@ import java.util.stream.IntStream;
 public class DaoStudentCourses {
     public void saveStudentCoursesTable() {
         DataSource dataSource = new DataSource();
-        String selectAllFromStudents = "SELECT * FROM students";
+        String selectStudentIdFromStudents = "SELECT student_id FROM students";
         try {
-            String query1 = "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)";
             PreparedStatement preparedStatement =
-                    dataSource.getConnection().prepareStatement(query1);
+                    dataSource.getConnection().prepareStatement( "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)");
             Statement statement = dataSource.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery(selectAllFromStudents);
+            ResultSet resultSet = statement.executeQuery(selectStudentIdFromStudents);
             while(resultSet.next()){
                 int numberOfCoursesForStudent = 1 + (int) (Math.random() * 3);
                 int[] numbersOfCoursesThatUsersAlreadyHas = new int[3];

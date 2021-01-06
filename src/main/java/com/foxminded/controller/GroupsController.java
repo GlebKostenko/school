@@ -1,8 +1,6 @@
 package com.foxminded.controller;
 
-import com.foxminded.service.CoursesService;
 import com.foxminded.service.GroupsService;
-import com.foxminded.service.StudentService;
 
 import java.sql.SQLException;
 import java.util.stream.Collectors;

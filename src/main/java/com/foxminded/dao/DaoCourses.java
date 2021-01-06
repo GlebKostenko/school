@@ -1,21 +1,17 @@
 package com.foxminded.dao;
 
-import java.io.File;
+import com.foxminded.service.CoursesService;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DaoCourses {
-    private final static String fileCoursesDescription = "CoursesDescription.txt";
 
     public void saveCoursesTable() {
         try {
@@ -23,16 +19,11 @@ public class DaoCourses {
             DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement =
                     dataSource.getConnection().prepareStatement(insertionInCoursesTable);
-            List<String> coursesDescription = Files.lines(Paths
-                    .get(getFileFromResource(fileCoursesDescription).getPath()))
-                    .collect(Collectors.toList());
-            for(int i = 0;i < 10;++i){
-                String fullInfAboutCourse = coursesDescription.get(i);
-                int startOfDesc = fullInfAboutCourse.indexOf('(');
-                String nameOfCourse = fullInfAboutCourse.substring(0,startOfDesc);
-                String descriptionOfCourse = fullInfAboutCourse.substring(startOfDesc + 1,fullInfAboutCourse.length() - 1);
-                preparedStatement.setString(1,nameOfCourse);
-                preparedStatement.setString(2,descriptionOfCourse);
+            DaoCourses daoCourses = new DaoCourses();
+            CoursesService coursesService = new CoursesService(daoCourses);
+            for(Course course : coursesService.generateCourses()){
+                preparedStatement.setString(1,course.getCourseName());
+                preparedStatement.setString(2,course.getCourseDescription());
                 preparedStatement.execute();
             }
         }catch (SQLException  | URISyntaxException | IOException e){
@@ -40,14 +31,31 @@ public class DaoCourses {
         }
     }
 
-    private File getFileFromResource(String fileName) throws URISyntaxException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return new File(resource.toURI());
+
+
+    public String showAllCourses() throws SQLException {
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT course_name FROM courses");
+        StringBuilder result = new StringBuilder();
+        while (resultSet.next()){
+            result.append(resultSet.getString(1) +"\n");
         }
+        return result.toString();
+    }
+
+    public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException {
+        DataSource dataSource = new DataSource();
+        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement("SELECT st.first_name,st.last_name FROM student_courses sc " +
+                "LEFT JOIN students st ON st.student_id = sc.student_id " +
+                "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_name = ?");
+        preparedStatement.setString(1,courseName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        List<String> result = new ArrayList<>();
+        while (resultSet.next()){
+            result.add(resultSet.getString(1) + " " + resultSet.getString(2));
+        }
+        return result;
     }
 
 }

@@ -1,21 +1,15 @@
 package com.foxminded.dao;
 
-import java.io.File;
+import com.foxminded.service.StudentService;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class DaoStudent {
-    private final static String fileNames = "names.txt";
-    private final static String fileSurnames = "surnames.txt";
 
     public void addNewStudent(String firstName, String lastName) {
         try {
@@ -93,16 +87,12 @@ public class DaoStudent {
             String insertionInStudentsTable = "INSERT INTO students(group_id,first_name,last_name) VALUES (?,?,?)";
             DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(insertionInStudentsTable);
-            List<String> names = Files.lines(Paths.get(getFileFromResource(fileNames).getPath())).collect(Collectors.toList());
-            List<String> surnames = Files.lines(Paths.get(getFileFromResource(fileSurnames).getPath())).collect(Collectors.toList());
-            for (int i = 0; i < 200; ++i) {
-                int randomNumberOfGroup = 1 + (int) (Math.random() * 10);
-                int randomNumberOFStudentsInGroup = 10 + (int) (Math.random() * 21);
-                String randomName = names.get((int) (Math.random() * 20));
-                String randomSurname = surnames.get((int) (Math.random() * 20));
-                preparedStatement.setInt(1, randomNumberOfGroup);
-                preparedStatement.setString(2, randomName);
-                preparedStatement.setString(3, randomSurname);
+            DaoStudent daoStudent = new DaoStudent();
+            StudentService studentService = new StudentService(daoStudent);
+            for (Student student : studentService.generateStudents()) {
+                preparedStatement.setInt(1, student.getGroupId());
+                preparedStatement.setString(2, student.getFirstName());
+                preparedStatement.setString(3, student.getLastName());
                 preparedStatement.execute();
             }
         }catch (SQLException  | URISyntaxException | IOException e){
@@ -110,13 +100,17 @@ public class DaoStudent {
         }
     }
 
-    private File getFileFromResource(String fileName) throws URISyntaxException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(fileName);
-        if (resource == null) {
-            throw new IllegalArgumentException("file not found! " + fileName);
-        } else {
-            return new File(resource.toURI());
+    public String showAllStudents() throws SQLException {
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT student_id,first_name,last_name FROM students");
+        StringBuilder result = new StringBuilder();
+        while (resultSet.next()){
+            result.append(resultSet.getInt(1) +" "
+                    + resultSet.getString(2) +" "
+                    + resultSet.getString(3) + "\n");
         }
+        return result.toString();
     }
+
 }

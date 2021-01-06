@@ -1,6 +1,5 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoStudentCourses;
 import com.foxminded.service.StudentCoursesService;
 
 public class StudentCoursesController {
