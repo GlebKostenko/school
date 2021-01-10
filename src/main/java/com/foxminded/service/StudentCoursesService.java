@@ -1,14 +1,14 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DaoStudentCourses;
+import com.foxminded.dao.StudentCoursesDao;
 
 public class StudentCoursesService {
-    private DaoStudentCourses daoStudentCourses;
-    public StudentCoursesService(DaoStudentCourses daoStudentCourses) {
-        this.daoStudentCourses = daoStudentCourses;
+    private StudentCoursesDao studentCoursesDao;
+    public StudentCoursesService(StudentCoursesDao studentCoursesDao) {
+        this.studentCoursesDao = studentCoursesDao;
     }
 
     public void saveStudentCoursesTable(){
-        daoStudentCourses.saveStudentCoursesTable();
+        studentCoursesDao.saveStudentCoursesTable();
     }
 }

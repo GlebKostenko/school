@@ -1,10 +1,8 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoGroups;
+import com.foxminded.model.Group;
 import com.foxminded.service.GroupsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -23,7 +21,7 @@ class GroupsControllerTest {
 
     @Test
     void groupsWithLessOrEqualsStudentCount() throws SQLException {
-        given(groupsService.searchGroupsWithLessOrEqualsStudentCount(15)).willReturn(Arrays.asList("fv-05","fk-03","rt-01"));
+        given(groupsService.searchGroupsWithLessOrEqualsStudentCount(15)).willReturn(Arrays.asList(new Group("fv-05"),new Group("fk-03"),new Group("rt-01")));
         String expected = "fv-05\n" + "fk-03\n" + "rt-01\n";
         assertEquals(expected, groupsController.GroupsWithLessOrEqualsStudentCount(15));
     }

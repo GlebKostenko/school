@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.stream.IntStream;
 
-public class DaoStudentCourses {
+public class StudentCoursesDao {
     public void saveStudentCoursesTable() {
         DataSource dataSource = new DataSource();
         String selectStudentIdFromStudents = "SELECT student_id FROM students";

@@ -1,32 +1,24 @@
 package com.foxminded.service;
 
 import com.foxminded.dao.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import static org.mockito.BDDMockito.given;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Arrays;
-import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class GroupsServiceTest {
 
-    DaoGroups daoGroups = mock(DaoGroups.class);
+    GroupsDao groupsDao = mock(GroupsDao.class);
     private GroupsService groupsService;
     GroupsServiceTest(){
-        groupsService = new GroupsService(daoGroups);
+        groupsService = new GroupsService(groupsDao);
     }
 
     @Test
     void saveGroupsTable() {
-        doNothing().when(daoGroups).saveGroupsTable();
+        doNothing().when(groupsDao).saveGroupsTable(anyList());
         groupsService.saveGroupsTable();
-        verify(daoGroups,times(1)).saveGroupsTable();
+        verify(groupsDao,times(1)).saveGroupsTable(anyList());
     }
 
 }

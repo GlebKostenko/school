@@ -1,10 +1,10 @@
-package com.foxminded.dao;
+package com.foxminded.model;
 
 public class Course {
     private String courseName;
     private String courseDescription;
 
-    public Course(String courseName,String courseDescription) {
+    public Course(String courseName, String courseDescription) {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }

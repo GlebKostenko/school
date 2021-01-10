@@ -13,7 +13,7 @@ public class GroupsController {
 
     public String GroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
         return groupsService.searchGroupsWithLessOrEqualsStudentCount(count).stream().map(x ->{
-            return x + "\n";
+            return x.getGroupName() + "\n";
         }).collect(Collectors.joining());
     }
 

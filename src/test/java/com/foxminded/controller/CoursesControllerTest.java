@@ -1,11 +1,11 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoCourses;
+import com.foxminded.model.Student;
 import com.foxminded.service.CoursesService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Arrays;
 
@@ -22,7 +22,7 @@ class CoursesControllerTest {
     }
 
     @Test
-    void saveCoursesTable() {
+    void saveCoursesTable() throws URISyntaxException, IOException {
         doNothing().when(coursesService).saveCoursesTable();
         coursesController.saveCoursesTable();
         verify(coursesService,times(1)).saveCoursesTable();
@@ -30,7 +30,11 @@ class CoursesControllerTest {
 
     @Test
     void findStudentsRelatedToCourse() throws SQLException{
-        given(coursesService.findStudentsRelatedToCourse("Math")).willReturn(Arrays.asList("Victor Ivanov","Alexander Chernyev","Iakov Dymarski"));
+        given(coursesService.findStudentsRelatedToCourse("Math")).willReturn(Arrays.asList(
+                new Student(1,"Victor","Ivanov"),
+                new Student(2,"Alexander","Chernyev"),
+                new Student(3,"Iakov","Dymarski"))
+        );
         String expected = "Victor Ivanov\n" + "Alexander Chernyev\n" + "Iakov Dymarski\n";
         assertEquals(expected, coursesController.findStudentsRelatedToCourse("Math"));
     }

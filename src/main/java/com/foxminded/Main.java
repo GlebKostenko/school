@@ -4,36 +4,35 @@ import com.foxminded.controller.CoursesController;
 import com.foxminded.controller.GroupsController;
 import com.foxminded.controller.StudentController;
 import com.foxminded.controller.StudentCoursesController;
-import com.foxminded.dao.DaoCourses;
-import com.foxminded.dao.DaoGroups;
-import com.foxminded.dao.DaoStudent;
-import com.foxminded.dao.DaoStudentCourses;
+import com.foxminded.dao.CoursesDao;
+import com.foxminded.dao.GroupsDao;
+import com.foxminded.dao.StudentDao;
+import com.foxminded.dao.StudentCoursesDao;
 import com.foxminded.service.CoursesService;
 import com.foxminded.service.GroupsService;
 import com.foxminded.service.StudentCoursesService;
 import com.foxminded.service.StudentService;
-
 import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        DaoStudent daoStudent = new DaoStudent();
-        DaoGroups daoGroups = new DaoGroups();
-        DaoCourses daoCourses = new DaoCourses();
-        DaoStudentCourses daoStudentCourses = new DaoStudentCourses();
-        GroupsService groupsService = new GroupsService(daoGroups);
-        CoursesService coursesService = new CoursesService(daoCourses);
-        StudentService studentService = new StudentService(daoStudent);
-        StudentCoursesService studentCoursesService = new StudentCoursesService(daoStudentCourses);
+        StudentDao studentDao = new StudentDao();
+        GroupsDao groupsDao = new GroupsDao();
+        CoursesDao coursesDao = new CoursesDao();
+        StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
+        GroupsService groupsService = new GroupsService(groupsDao);
+        CoursesService coursesService = new CoursesService(coursesDao);
+        StudentService studentService = new StudentService(studentDao);
+        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
         GroupsController groupsController = new GroupsController(groupsService);
         CoursesController coursesController = new CoursesController(coursesService);
         StudentController studentController = new StudentController(studentService);
         StudentCoursesController studentCoursesController = new StudentCoursesController(studentCoursesService);
-        groupsController.saveGroupsTable();
-        studentController.saveStudentsTable();
-        coursesController.saveCoursesTable();
-        studentCoursesController.saveStudentCoursesTable();
+//        groupsController.saveGroupsTable();
+//        studentController.saveStudentsTable();
+//        coursesController.saveCoursesTable();
+//        studentCoursesController.saveStudentCoursesTable();
         String query = "Enter your query(select number):\n"+
                 "1.Add new student\n"+
                 "2.Add student to course\n" +
@@ -58,7 +57,7 @@ public class Main {
                     System.out.println(studentController.showAllStudents());
                 }
                 System.out.println("Would you like to see a list of courses?(Print Y if you want and N if you don't)");
-                if (number_query.nextLine().equals('Y')){
+                if (number_query.nextLine().equals("Y")){
                     System.out.println(coursesController.showAllCourses());
                 }
                 System.out.println("Enter student id:");

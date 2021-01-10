@@ -1,4 +1,4 @@
-package com.foxminded.dao;
+package com.foxminded.model;
 
 public class Group {
     private String groupName;

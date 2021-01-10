@@ -1,7 +1,10 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DaoStudent;
+import com.foxminded.dao.StudentDao;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -9,43 +12,43 @@ import static org.mockito.Mockito.times;
 import static org.mockito.BDDMockito.given;
 
 class StudentServiceTest {
-    DaoStudent daoStudent = mock(DaoStudent.class);
+    StudentDao studentDao = mock(StudentDao.class);
     private StudentService studentService;
     StudentServiceTest(){
-        studentService = new StudentService(daoStudent);
+        studentService = new StudentService(studentDao);
     }
 
     @Test
-    void saveStudentsTable() {
-        doNothing().when(daoStudent).saveStudentsTable();
+    void saveStudentsTable() throws URISyntaxException, IOException {
+        doNothing().when(studentDao).saveStudentsTable(anyList());
         studentService.saveStudentsTable();
-        verify(daoStudent,times(1)).saveStudentsTable();
+        verify(studentDao,times(1)).saveStudentsTable(anyList());
     }
 
     @Test
     void addNewStudent() {
-        doNothing().when(daoStudent).addNewStudent("Ivan","Ivanov");
+        doNothing().when(studentDao).addNewStudent("Ivan","Ivanov");
         studentService.addNewStudent("Ivan","Ivanov");
-        verify(daoStudent,times(1)).addNewStudent("Ivan","Ivanov");
+        verify(studentDao,times(1)).addNewStudent("Ivan","Ivanov");
     }
 
     @Test
     void addStudentToCourse() {
-        doNothing().when(daoStudent).addStudentToCourse(1,1);
+        doNothing().when(studentDao).addStudentToCourse(1,1);
         studentService.addStudentToCourse(1,1);
-        verify(daoStudent,times(1)).addStudentToCourse(1,1);
+        verify(studentDao,times(1)).addStudentToCourse(1,1);
     }
 
     @Test
     void deleteStudentById() {
-        doNothing().when(daoStudent).deleteStudentById(1);
+        doNothing().when(studentDao).deleteStudentById(1);
         studentService.deleteStudentById(1);
-        verify(daoStudent,times(1)).deleteStudentById(1);
+        verify(studentDao,times(1)).deleteStudentById(1);
     }
 
     @Test
     void removeStudentFromCourse() {
-        given(daoStudent.removeStudentFromCourse(1)).willReturn("Math");
+        given(studentDao.removeStudentFromCourse(1)).willReturn("Math");
         String expected = "Math";
         assertEquals(expected,studentService.removeStudentFromCourse(1));
     }

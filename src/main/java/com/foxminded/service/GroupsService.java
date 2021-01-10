@@ -1,26 +1,23 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DaoGroups;
-import com.foxminded.dao.DataSource;
-import com.foxminded.dao.Group;
+import com.foxminded.dao.GroupsDao;
+import com.foxminded.model.Group;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class GroupsService {
-    private DaoGroups daoGroups;
-    public GroupsService(DaoGroups daoGroups){
-        this.daoGroups = daoGroups;
+    private GroupsDao groupsDao;
+    public GroupsService(GroupsDao groupsDao){
+        this.groupsDao = groupsDao;
     }
-    public List<String> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
-        return daoGroups.searchGroupsWithLessOrEqualsStudentCount(count);
+    public List<Group> searchGroupsWithLessOrEqualsStudentCount(int count) throws SQLException {
+        return groupsDao.searchGroupsWithLessOrEqualsStudentCount(count);
     }
 
-    public List<Group> GenerateGroups() {
+    private List<Group> generateGroups() {
         List<Group> groups = new ArrayList<>();
         Random r = new Random();
         for(int i = 0; i < 10; ++i) {
@@ -35,6 +32,6 @@ public class GroupsService {
     }
 
     public void saveGroupsTable() {
-        daoGroups.saveGroupsTable();
+        groupsDao.saveGroupsTable(generateGroups());
     }
 }

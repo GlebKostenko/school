@@ -1,8 +1,8 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DaoStudent;
-import com.foxminded.dao.DataSource;
-import com.foxminded.dao.Student;
+import com.foxminded.dao.StudentDao;
+import com.foxminded.model.Student;
+import com.foxminded.model.StudentInf;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,10 +10,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,37 +18,37 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final static String fileNames = "names.txt";
     private final static String fileSurnames = "surnames.txt";
-    private DaoStudent daoStudent;
+    private StudentDao studentDao;
 
-    public StudentService(DaoStudent daoStudent){
-        this.daoStudent = daoStudent;
+    public StudentService(StudentDao studentDao){
+        this.studentDao = studentDao;
     }
 
-    public void saveStudentsTable(){
-        daoStudent.saveStudentsTable();
+    public void saveStudentsTable() throws URISyntaxException,IOException{
+        studentDao.saveStudentsTable(generateStudents());
     }
 
     public void addNewStudent(String firstName, String lastName){
-        daoStudent.addNewStudent(firstName,lastName);
+        studentDao.addNewStudent(firstName,lastName);
     }
 
     public void addStudentToCourse(int studentId, int courseId){
-        daoStudent.addStudentToCourse(studentId,courseId);
+        studentDao.addStudentToCourse(studentId,courseId);
     }
 
     public void deleteStudentById(int studentId){
-        daoStudent.deleteStudentById(studentId);
+        studentDao.deleteStudentById(studentId);
     }
 
     public String removeStudentFromCourse(int studentId){
-        return daoStudent.removeStudentFromCourse(studentId);
+        return studentDao.removeStudentFromCourse(studentId);
     }
 
-    public String showAllStudents() throws SQLException {
-        return daoStudent.showAllStudents();
+    public List<StudentInf> showAllStudents() throws SQLException {
+        return studentDao.showAllStudents();
     }
 
-    public List<Student> generateStudents() throws URISyntaxException,IOException{
+    private List<Student> generateStudents() throws URISyntaxException,IOException{
         List<Student> students = new ArrayList<>();
         List<String> names = Files.lines(Paths.get(getFileFromResource(fileNames).getPath())).collect(Collectors.toList());
         List<String> surnames = Files.lines(Paths.get(getFileFromResource(fileSurnames).getPath())).collect(Collectors.toList());

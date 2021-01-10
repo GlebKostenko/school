@@ -1,5 +1,8 @@
 package com.foxminded.dao;
 
+import com.foxminded.service.CoursesService;
+import com.foxminded.service.GroupsService;
+import com.foxminded.service.StudentService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +14,7 @@ import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 class DaoImplTest {
-    private DaoStudent daoStudent = new DaoStudent();
+    private StudentDao studentDao = new StudentDao();
 
 
     @BeforeEach
@@ -42,14 +45,17 @@ class DaoImplTest {
         statement.execute(query1);
         statement.execute(query2);
         statement.execute(query3);
-        DaoGroups daoGroups = new DaoGroups();
-        daoGroups.saveGroupsTable();
-        DaoStudent daoStudent = new DaoStudent();
-        daoStudent.saveStudentsTable();
-        DaoCourses daoCourses = new DaoCourses();
-        daoCourses.saveCoursesTable();
-        DaoStudentCourses daoStudentCourses = new DaoStudentCourses();
-        daoStudentCourses.saveStudentCoursesTable();
+        GroupsDao groupsDao = new GroupsDao();
+        GroupsService groupsService = new GroupsService(groupsDao);
+        groupsService.saveGroupsTable();
+        StudentDao studentDao = new StudentDao();
+        StudentService studentService = new StudentService(studentDao);
+        studentService.saveStudentsTable();
+        CoursesDao coursesDao = new CoursesDao();
+        CoursesService coursesService = new CoursesService(coursesDao);
+        coursesService.saveCoursesTable();
+        StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
+        studentCoursesDao.saveStudentCoursesTable();
     }
     @AfterEach
     void deleteTables()throws Exception{
@@ -66,7 +72,7 @@ class DaoImplTest {
     }
     @Test
     void addNewStudent() throws SQLException {
-        daoStudent.addNewStudent("Пётр","Капица");
+        studentDao.addNewStudent("Пётр","Капица");
         String query = "SELECT COUNT(1) FROM students " +
                 "WHERE first_name = 'Пётр' AND last_name = 'Капица'";
         DataSource dataSource = new DataSource();
@@ -78,7 +84,7 @@ class DaoImplTest {
 
     @Test
     void addStudentToCourse() throws SQLException{
-        daoStudent.addStudentToCourse(1,1);
+        studentDao.addStudentToCourse(1,1);
         String query = "SELECT COUNT(1) FROM student_courses " +
                 "WHERE student_id=1 AND course_id = 1";
         DataSource dataSource = new DataSource();
@@ -90,7 +96,7 @@ class DaoImplTest {
 
     @Test
     void deleteStudentById() throws SQLException{
-        daoStudent.deleteStudentById(1);
+        studentDao.deleteStudentById(1);
         String query = "SELECT COUNT(1) FROM students " +
                 "WHERE student_id=1";
         String query1 = "SELECT * FROM students";
@@ -103,7 +109,7 @@ class DaoImplTest {
 
     @Test
     void removeStudentFromCourse() throws Exception{
-        String courseName = daoStudent.removeStudentFromCourse(1);
+        String courseName = studentDao.removeStudentFromCourse(1);
         String query = "SELECT COUNT(1) FROM student_courses sc LEFT JOIN courses cs ON cs.course_id = sc.course_id " +
                 "WHERE student_id=1 AND course_name = ?";
         DataSource dataSource = new DataSource();

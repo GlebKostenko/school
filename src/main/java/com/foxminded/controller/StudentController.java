@@ -3,9 +3,12 @@ package com.foxminded.controller;
 import com.foxminded.dao.DataSource;
 import com.foxminded.service.StudentService;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.stream.Collectors;
 
 public class StudentController {
     private StudentService studentService;
@@ -14,10 +17,12 @@ public class StudentController {
     }
 
     public String showAllStudents() throws SQLException {
-        return studentService.showAllStudents();
+        return studentService.showAllStudents().stream().map(x->{
+            return x.getStudentId() +" "+ x.getFirstName()+ " " + x.getLastName() + "\n";
+        }).collect(Collectors.joining());
     }
 
-    public void saveStudentsTable(){
+    public void saveStudentsTable()throws URISyntaxException, IOException {
         studentService.saveStudentsTable();
     }
 

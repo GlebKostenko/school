@@ -1,8 +1,8 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.Course;
-import com.foxminded.dao.DaoCourses;
-import com.foxminded.dao.DataSource;
+import com.foxminded.dao.CoursesDao;
+import com.foxminded.model.Course;
+import com.foxminded.model.Student;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,8 +10,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,24 +17,24 @@ import java.util.stream.Collectors;
 
 public class CoursesService {
     private final static String fileCoursesDescription = "CoursesDescription.txt";
-    private DaoCourses daoCourses;
-    public CoursesService(DaoCourses daoCourses){
-        this.daoCourses = daoCourses;
+    private CoursesDao coursesDao;
+    public CoursesService(CoursesDao coursesDao){
+        this.coursesDao = coursesDao;
     }
 
-    public void saveCoursesTable(){
-        daoCourses.saveCoursesTable();
+    public void saveCoursesTable() throws URISyntaxException,IOException{
+        coursesDao.saveCoursesTable(generateCourses());
     }
 
-    public String showAllCourses() throws SQLException {
-        return daoCourses.showAllCourses();
+    public List<Course> showAllCourses() throws SQLException {
+        return coursesDao.showAllCourses();
     }
 
-    public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException {
-       return daoCourses.findStudentsRelatedToCourse(courseName);
+    public List<Student> findStudentsRelatedToCourse(String courseName) throws SQLException {
+       return coursesDao.findStudentsRelatedToCourse(courseName);
     }
 
-    public List<Course> generateCourses() throws URISyntaxException,IOException{
+    private List<Course> generateCourses() throws URISyntaxException,IOException{
         List<Course> courses = new ArrayList<>();
         List<String> coursesDescription = Files.lines(Paths
                 .get(getFileFromResource(fileCoursesDescription).getPath()))

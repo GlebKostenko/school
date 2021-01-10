@@ -1,26 +1,24 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DaoCourses;
-import com.foxminded.dao.DaoStudentCourses;
+import com.foxminded.dao.StudentCoursesDao;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class StudentCoursesServiceTest {
 
-    DaoStudentCourses daoStudentCourses = mock(DaoStudentCourses.class);
+    StudentCoursesDao studentCoursesDao = mock(StudentCoursesDao.class);
     private StudentCoursesService studentCoursesService;
     StudentCoursesServiceTest(){
-        studentCoursesService = new StudentCoursesService(daoStudentCourses);
+        studentCoursesService = new StudentCoursesService(studentCoursesDao);
     }
 
     @Test
     void saveCoursesTable() {
-        doNothing().when(daoStudentCourses).saveStudentCoursesTable();
+        doNothing().when(studentCoursesDao).saveStudentCoursesTable();
         studentCoursesService.saveStudentCoursesTable();
-        verify(daoStudentCourses,times(1)).saveStudentCoursesTable();
+        verify(studentCoursesDao,times(1)).saveStudentCoursesTable();
     }
 
 }

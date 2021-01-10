@@ -1,15 +1,17 @@
 package com.foxminded.dao;
 
-import com.foxminded.service.StudentService;
+import com.foxminded.model.StudentInf;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
-public class DaoStudent {
+import com.foxminded.model.Student;
+
+public class StudentDao {
 
     public void addNewStudent(String firstName, String lastName) {
         try {
@@ -82,35 +84,31 @@ public class DaoStudent {
         }
     }
 
-    public void saveStudentsTable() {
+    public void saveStudentsTable(List<Student> students) {
         try {
             String insertionInStudentsTable = "INSERT INTO students(group_id,first_name,last_name) VALUES (?,?,?)";
             DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(insertionInStudentsTable);
-            DaoStudent daoStudent = new DaoStudent();
-            StudentService studentService = new StudentService(daoStudent);
-            for (Student student : studentService.generateStudents()) {
+            for (Student student : students) {
                 preparedStatement.setInt(1, student.getGroupId());
                 preparedStatement.setString(2, student.getFirstName());
                 preparedStatement.setString(3, student.getLastName());
                 preparedStatement.execute();
             }
-        }catch (SQLException  | URISyntaxException | IOException e){
+        }catch (SQLException e){
             e.printStackTrace();
         }
     }
 
-    public String showAllStudents() throws SQLException {
+    public List<StudentInf> showAllStudents() throws SQLException {
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT student_id,first_name,last_name FROM students");
-        StringBuilder result = new StringBuilder();
+        List<StudentInf> result = new ArrayList<>();
         while (resultSet.next()){
-            result.append(resultSet.getInt(1) +" "
-                    + resultSet.getString(2) +" "
-                    + resultSet.getString(3) + "\n");
+            result.add(new StudentInf(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3)));
         }
-        return result.toString();
+        return result;
     }
 
 }

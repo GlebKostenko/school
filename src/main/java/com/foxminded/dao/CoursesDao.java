@@ -1,9 +1,8 @@
 package com.foxminded.dao;
 
-import com.foxminded.service.CoursesService;
+import com.foxminded.model.Course;
+import com.foxminded.model.Student;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,49 +10,48 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DaoCourses {
 
-    public void saveCoursesTable() {
+public class CoursesDao {
+
+    public void saveCoursesTable(List<Course> courses) {
         try {
             String insertionInCoursesTable = "INSERT INTO courses(course_name,course_description) VALUES (?,?)";
             DataSource dataSource = new DataSource();
             PreparedStatement preparedStatement =
                     dataSource.getConnection().prepareStatement(insertionInCoursesTable);
-            DaoCourses daoCourses = new DaoCourses();
-            CoursesService coursesService = new CoursesService(daoCourses);
-            for(Course course : coursesService.generateCourses()){
+            for(Course course : courses){
                 preparedStatement.setString(1,course.getCourseName());
                 preparedStatement.setString(2,course.getCourseDescription());
                 preparedStatement.execute();
             }
-        }catch (SQLException  | URISyntaxException | IOException e){
+        }catch (SQLException e){
             e.printStackTrace();
         }
     }
 
 
 
-    public String showAllCourses() throws SQLException {
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT course_name FROM courses");
-        StringBuilder result = new StringBuilder();
+    public List<Course> showAllCourses()  throws SQLException{
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT course_name,course_description FROM courses");
+            List<Course> result = new ArrayList<>();
         while (resultSet.next()){
-            result.append(resultSet.getString(1) +"\n");
+            result.add(new Course(resultSet.getString(1),resultSet.getString(2)));
         }
-        return result.toString();
+        return result;
     }
 
-    public List<String> findStudentsRelatedToCourse(String courseName) throws SQLException {
+    public List<Student> findStudentsRelatedToCourse(String courseName) throws SQLException {
         DataSource dataSource = new DataSource();
-        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement("SELECT st.first_name,st.last_name FROM student_courses sc " +
+        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement("SELECT st.group_id,st.first_name,st.last_name FROM student_courses sc " +
                 "LEFT JOIN students st ON st.student_id = sc.student_id " +
                 "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_name = ?");
         preparedStatement.setString(1,courseName);
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<String> result = new ArrayList<>();
+        List<Student> result = new ArrayList<>();
         while (resultSet.next()){
-            result.add(resultSet.getString(1) + " " + resultSet.getString(2));
+            result.add(new Student(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3)));
         }
         return result;
     }

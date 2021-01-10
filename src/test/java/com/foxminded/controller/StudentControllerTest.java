@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,7 +29,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void saveStudentsTable() {
+    void saveStudentsTable() throws URISyntaxException, IOException {
         doNothing().when(studentService).saveStudentsTable();
         studentController.saveStudentsTable();
         verify(studentService,times(1)).saveStudentsTable();

@@ -1,10 +1,8 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DaoStudentCourses;
 import com.foxminded.service.StudentCoursesService;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
