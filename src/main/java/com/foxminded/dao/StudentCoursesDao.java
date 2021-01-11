@@ -7,13 +7,17 @@ import java.sql.Statement;
 import java.util.stream.IntStream;
 
 public class StudentCoursesDao {
+    private DataSource dataSource;
+    private PreparedStatement preparedStatement;
+    private Statement statement;
+
     public void saveStudentCoursesTable() {
-        DataSource dataSource = new DataSource();
+        dataSource = new DataSource();
         String selectStudentIdFromStudents = "SELECT student_id FROM students";
         try {
-            PreparedStatement preparedStatement =
+            preparedStatement =
                     dataSource.getConnection().prepareStatement( "INSERT INTO student_courses(student_id,course_id) VALUES (?,?)");
-            Statement statement = dataSource.getConnection().createStatement();
+            statement = dataSource.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery(selectStudentIdFromStudents);
             while(resultSet.next()){
                 int numberOfCoursesForStudent = 1 + (int) (Math.random() * 3);
@@ -47,6 +51,16 @@ public class StudentCoursesDao {
             }
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            try {
+                dataSource.closeConnection();
+                if (preparedStatement != null && statement != null) {
+                    preparedStatement.close();
+                    statement.close();
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 }

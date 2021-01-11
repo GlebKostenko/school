@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static org.mockito.Mockito.*;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 class DaoImplTest {
@@ -73,23 +75,72 @@ class DaoImplTest {
     @Test
     void addNewStudent() throws SQLException {
         studentDao.addNewStudent("Пётр","Капица");
-        String query = "SELECT COUNT(1) FROM students " +
-                "WHERE first_name = 'Пётр' AND last_name = 'Капица'";
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
+                "WHERE first_name = 'Пётр' AND last_name = 'Капица'");
         resultSet.next();
         assertEquals(1,resultSet.getInt(1));
+    }
+    @Test
+    void saveStudentsTable(){
+        try {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 100);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void saveGroupsTable(){
+        try {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM groups ");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 5);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void saveCoursesTable(){
+        try {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses ");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 5);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void saveStudentCoursesTable(){
+        try {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM student_courses ");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 100);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     @Test
     void addStudentToCourse() throws SQLException{
         studentDao.addStudentToCourse(1,1);
-        String query = "SELECT COUNT(1) FROM student_courses " +
-                "WHERE student_id=1 AND course_id = 1";
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses " +
+                "WHERE student_id=1 AND course_id = 1");
         resultSet.next();
         assertEquals(true,resultSet.getInt(1) > 0);
     }
@@ -97,27 +148,21 @@ class DaoImplTest {
     @Test
     void deleteStudentById() throws SQLException{
         studentDao.deleteStudentById(1);
-        String query = "SELECT COUNT(1) FROM students " +
-                "WHERE student_id=1";
         String query1 = "SELECT * FROM students";
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
+                "WHERE student_id=1");
         resultSet.next();
         assertEquals(0,resultSet.getInt(1));
     }
 
     @Test
     void removeStudentFromCourse() throws Exception{
-        String courseName = studentDao.removeStudentFromCourse(1);
-        String query = "SELECT COUNT(1) FROM student_courses sc LEFT JOIN courses cs ON cs.course_id = sc.course_id " +
-                "WHERE student_id=1 AND course_name = ?";
-        DataSource dataSource = new DataSource();
-        PreparedStatement preparedStatement = dataSource.getConnection().prepareStatement(query);
-        preparedStatement.setString(1,courseName);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
-        assertEquals(0,resultSet.getInt(1));
+        studentDao = mock(StudentDao.class);
+        doNothing().when(studentDao).removeStudentFromCourse(1,1);
+        studentDao.removeStudentFromCourse(1,1);
+        verify(studentDao,times(1)).removeStudentFromCourse(1,1);
     }
 
 }

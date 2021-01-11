@@ -80,9 +80,11 @@ public class Main {
                     System.out.println(studentController.showAllStudents());
                 }
                 System.out.println("Enter student id:");
-                System.out.println("Student was successfully removed from "
-                        + studentController.removeStudentFromCourse(Integer.parseInt(number_query.nextLine()))
-                        + " course\n");
+                int studentId = Integer.parseInt(number_query.nextLine());
+                System.out.println("Enter course id:");
+                int courseId = Integer.parseInt(number_query.nextLine());
+                studentController.removeStudentFromCourse(studentId,courseId);
+                System.out.println("Student was successfully removed from course\n");
             }else if(action.equals("5")){
                 System.out.println("Enter count:");
                 System.out.println(groupsController.GroupsWithLessOrEqualsStudentCount(Integer.parseInt(number_query.nextLine())));

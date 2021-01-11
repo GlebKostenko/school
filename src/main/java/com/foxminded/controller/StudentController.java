@@ -38,8 +38,8 @@ public class StudentController {
         studentService.deleteStudentById(studentId);
     }
 
-    public String removeStudentFromCourse(int studentId){
-        return studentService.removeStudentFromCourse(studentId);
+    public void removeStudentFromCourse(int studentId,int courseId){
+        studentService.removeStudentFromCourse(studentId,courseId);
     }
 
 }

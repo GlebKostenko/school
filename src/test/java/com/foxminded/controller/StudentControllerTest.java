@@ -1,5 +1,6 @@
 package com.foxminded.controller;
 
+import com.foxminded.model.StudentInf;
 import com.foxminded.service.StudentService;
 import com.foxminded.service.StudentService;
 import org.junit.jupiter.api.Test;
@@ -9,9 +10,12 @@ import org.mockito.MockitoAnnotations;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willReturn;
 import static org.mockito.Mockito.*;
 
 class StudentControllerTest {
@@ -23,9 +27,9 @@ class StudentControllerTest {
 
     @Test
     void removeStudentFromCourse() {
-        given(studentService.removeStudentFromCourse(15)).willReturn("Biology");
-        String expected = "Biology";
-        assertEquals(expected,studentController.removeStudentFromCourse(15));
+        doNothing().when(studentService).removeStudentFromCourse(15,2);
+        studentController.removeStudentFromCourse(15,2);
+        verify(studentService,times(1)).removeStudentFromCourse(15,2);
     }
 
     @Test
@@ -54,6 +58,18 @@ class StudentControllerTest {
         doNothing().when(studentService).deleteStudentById(1);
         studentController.deleteStudentById(1);
         verify(studentService,times(1)).deleteStudentById(1);
+    }
+
+    @Test
+    void showAllStudents(){
+        try {
+            given(studentService.showAllStudents()).
+                    willReturn(Arrays.asList(new StudentInf(1, "Ivan", "Ivanov")));
+            String expected = "1 Ivan Ivanov\n";
+            assertEquals(expected,studentController.showAllStudents());
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
 }

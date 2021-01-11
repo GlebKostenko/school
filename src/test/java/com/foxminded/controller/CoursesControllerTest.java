@@ -1,5 +1,6 @@
 package com.foxminded.controller;
 
+import com.foxminded.model.Course;
 import com.foxminded.model.Student;
 import com.foxminded.service.CoursesService;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
@@ -37,5 +39,17 @@ class CoursesControllerTest {
         );
         String expected = "Victor Ivanov\n" + "Alexander Chernyev\n" + "Iakov Dymarski\n";
         assertEquals(expected, coursesController.findStudentsRelatedToCourse("Math"));
+    }
+
+    @Test
+    void showAllCourses(){
+        try {
+            given(coursesService.showAllCourses()).
+                    willReturn(Arrays.asList(new Course("Math", "Intresting")));
+            String expected = "Math\n";
+            assertEquals(expected, coursesController.showAllCourses());
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 }

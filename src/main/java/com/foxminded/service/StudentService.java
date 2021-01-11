@@ -40,8 +40,8 @@ public class StudentService {
         studentDao.deleteStudentById(studentId);
     }
 
-    public String removeStudentFromCourse(int studentId){
-        return studentDao.removeStudentFromCourse(studentId);
+    public void removeStudentFromCourse(int studentId,int courseId){
+        studentDao.removeStudentFromCourse(studentId,courseId);
     }
 
     public List<StudentInf> showAllStudents() throws SQLException {

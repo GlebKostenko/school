@@ -37,4 +37,14 @@ public class DataSource {
             return null;
         }
     }
+
+    public void closeConnection(){
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        }
+    }
 }
