@@ -16,9 +16,9 @@ class StudentCoursesServiceTest {
 
     @Test
     void saveCoursesTable() {
-        doNothing().when(studentCoursesDao).saveStudentCoursesTable();
+        doNothing().when(studentCoursesDao).saveStudentCoursesTable(anyList());
         studentCoursesService.saveStudentCoursesTable();
-        verify(studentCoursesDao,times(1)).saveStudentCoursesTable();
+        verify(studentCoursesDao,times(1)).saveStudentCoursesTable(anyList());
     }
 
 }
