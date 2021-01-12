@@ -21,21 +21,16 @@ public class StudentCoursesService {
         studentCoursesDao.saveStudentCoursesTable(generateCoursesForStudent());
     }
     private List<StudentCourse> generateCoursesForStudent() {
-        try {
-            List<StudentCourse> result = new ArrayList<>();
-            studentDao = new StudentDao();
-            for (StudentInf studentInf : studentDao.showAllStudents()) {
-                int numberOfCoursesForStudent = 1 + (int) (Math.random() * 3);
+        List<StudentCourse> result = new ArrayList<>();
+        studentDao = new StudentDao();
+        for (StudentInf studentInf : studentDao.showAllStudents()) {
+            int numberOfCoursesForStudent = 1 + (int) (Math.random() * 3);
                 int[] numbersOfCoursesThatUsersAlreadyHas = new int[3];
                 for (int j = 0; j < numberOfCoursesForStudent; ++j) {
                     int randomNumberOfCourse = 1  + (int)(Math.random() * 10);
                     result.add(new StudentCourse(studentInf.getStudentId(),randomNumberOfCourse));
                 }
-            }
-            return result;
-        }catch (SQLException e){
-            e.printStackTrace();
-            return null;
         }
+        return result;
     }
 }

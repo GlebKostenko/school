@@ -8,7 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class DataSource {
+public class DataSource implements AutoCloseable{
     private Connection connection = null;
     private Properties properties;
     public DataSource(){
@@ -37,8 +37,8 @@ public class DataSource {
             return null;
         }
     }
-
-    public void closeConnection(){
+@Override
+    public void close(){
         try {
             if (connection != null) {
                 connection.close();

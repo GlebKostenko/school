@@ -8,17 +8,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
 
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-class DaoImplTest {
+class StudentDaoTest {
     private StudentDao studentDao = new StudentDao();
-
 
     @BeforeEach
     void createTables()throws Exception{
@@ -74,6 +74,7 @@ class DaoImplTest {
         statement.execute(dropGroupsTable);
         statement.execute(dropCoursesTable);
     }
+
     @Test
     void addNewStudent() throws SQLException {
         studentDao.addNewStudent("Пётр","Капица");
@@ -83,58 +84,6 @@ class DaoImplTest {
                 "WHERE first_name = 'Пётр' AND last_name = 'Капица'");
         resultSet.next();
         assertEquals(1,resultSet.getInt(1));
-    }
-
-    @Test
-    void saveStudentsTable(){
-        try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    void saveGroupsTable(){
-        try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM groups ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 5);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    void saveCoursesTable(){
-        try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 5);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    void saveStudentCoursesTable(){
-        try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM student_courses ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -160,11 +109,33 @@ class DaoImplTest {
     }
 
     @Test
-    void removeStudentFromCourse() throws Exception{
+    void removeStudentFromCourse() {
         studentDao = mock(StudentDao.class);
         doNothing().when(studentDao).removeStudentFromCourse(1,1);
         studentDao.removeStudentFromCourse(1,1);
         verify(studentDao,times(1)).removeStudentFromCourse(1,1);
     }
 
+    @Test
+    void saveStudentsTable() {
+        try {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 100);
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    void showAllStudents() {
+        assertEquals(true,!studentDao.showAllStudents().isEmpty());
+    }
+
+    @Test
+    void showAllStudentsEmpty(){
+        assertEquals(Arrays.asList(),studentDao.showAllStudents());
+    }
 }

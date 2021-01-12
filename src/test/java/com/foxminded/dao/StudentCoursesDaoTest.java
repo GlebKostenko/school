@@ -1,22 +1,21 @@
 package com.foxminded.dao;
 
-import com.foxminded.model.Student;
+import com.foxminded.service.CoursesService;
 import com.foxminded.service.GroupsService;
+import com.foxminded.service.StudentCoursesService;
+import com.foxminded.service.StudentService;
 import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLSyntaxErrorException;
 import java.sql.Statement;
-import java.util.Arrays;
 
-public class DaoEmptyTest {
-    private StudentDao studentDao = new StudentDao();
-    private CoursesDao coursesDao = new CoursesDao();
-    private GroupsDao groupsDao = new GroupsDao();
+import static org.junit.jupiter.api.Assertions.*;
+
+class StudentCoursesDaoTest {
+
     @BeforeEach
     void createTables()throws Exception{
         String createGroupsTable= "create table groups(" +
@@ -45,6 +44,18 @@ public class DaoEmptyTest {
         statement.execute(createStudentsTable);
         statement.execute(createCoursesTable);
         statement.execute(createStudentCoursesTable);
+        GroupsDao groupsDao = new GroupsDao();
+        GroupsService groupsService = new GroupsService(groupsDao);
+        groupsService.saveGroupsTable();
+        StudentDao studentDao = new StudentDao();
+        StudentService studentService = new StudentService(studentDao);
+        studentService.saveStudentsTable();
+        CoursesDao coursesDao = new CoursesDao();
+        CoursesService coursesService = new CoursesService(coursesDao);
+        coursesService.saveCoursesTable();
+        StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
+        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
+        studentCoursesService.saveStudentCoursesTable();
     }
     @AfterEach
     void deleteTables()throws Exception{
@@ -61,27 +72,15 @@ public class DaoEmptyTest {
     }
 
     @Test
-    void showAllStudents(){
+    void saveStudentCoursesTable() {
         try {
-            assertEquals(Arrays.asList(),studentDao.showAllStudents());
-        }
-        catch (SQLException e) {
+            DataSource dataSource = new DataSource();
+            Statement statement = dataSource.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM student_courses ");
+            resultSet.next();
+            assertEquals(true,resultSet.getInt(1) > 100);
+        }catch (SQLException e){
             e.printStackTrace();
         }
-    }
-
-    @Test
-    void showAllCourses(){
-        assertEquals(Arrays.asList(),coursesDao.showAllCourses());
-    }
-
-    @Test
-    void findStudentsRelatedToCourse(){
-        assertEquals(Arrays.asList(),coursesDao.findStudentsRelatedToCourse(Mockito.anyString()));
-    }
-
-    @Test
-    void searchGroupsWithLessOrEqualsStudentCount(){
-        assertEquals(Arrays.asList(),groupsDao.searchGroupsWithLessOrEqualsStudentCount(Mockito.anyInt()));
     }
 }
