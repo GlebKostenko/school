@@ -95,4 +95,20 @@ class CoursesDaoTest {
     void findStudentsRelatedToCourse() {
         assertEquals(true,!coursesDao.findStudentsRelatedToCourse("Math").isEmpty());
     }
+    @Test
+    void showAllCoursesEmpty() throws SQLException{
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        statement.execute("DELETE FROM student_courses");
+        statement.execute("DELETE FROM courses");
+        assertEquals(Arrays.asList(),coursesDao.showAllCourses());
+    }
+
+    @Test
+    void findStudentsRelatedToCourseEmpty() throws SQLException{
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        statement.execute("DELETE FROM student_courses");
+        assertEquals(Arrays.asList(),coursesDao.findStudentsRelatedToCourse(Mockito.anyString()));
+    }
 }

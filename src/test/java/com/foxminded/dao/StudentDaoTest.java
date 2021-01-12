@@ -135,7 +135,11 @@ class StudentDaoTest {
     }
 
     @Test
-    void showAllStudentsEmpty(){
+    void showAllStudentsEmpty() throws SQLException{
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        statement.execute("DELETE FROM student_courses");
+        statement.execute("DELETE FROM students");
         assertEquals(Arrays.asList(),studentDao.showAllStudents());
     }
 }
