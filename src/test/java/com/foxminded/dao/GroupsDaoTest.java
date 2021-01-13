@@ -88,7 +88,7 @@ class GroupsDaoTest {
 
     @Test
     void searchGroupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
-        assertEquals(true,!groupsDao.searchGroupsWithLessOrEqualsStudentCount(15).isEmpty());
+        assertEquals(true,!groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
     }
 
     @Test

@@ -109,11 +109,14 @@ class StudentDaoTest {
     }
 
     @Test
-    void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
-        studentDao = mock(StudentDao.class);
-        doNothing().when(studentDao).removeStudentFromCourse(1,1);
+    void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeStudentDoesNotHaveThisCourse()throws SQLException {
+        studentDao.addStudentToCourse(1,1);
         studentDao.removeStudentFromCourse(1,1);
-        verify(studentDao,times(1)).removeStudentFromCourse(1,1);
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses WHERE student_id = 1 AND course_id = 1");
+        resultSet.next();
+        assertTrue(resultSet.getInt(1) == 0);
     }
 
     @Test

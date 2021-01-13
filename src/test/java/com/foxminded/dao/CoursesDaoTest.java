@@ -75,9 +75,9 @@ class CoursesDaoTest {
 
     @Test
     void saveCoursesTable_WhenEverythingGoesRight_thenShouldBeDataInATable() {
-        try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
+        try (DataSource dataSource = new DataSource();
+             Statement statement = dataSource.getConnection().createStatement())
+        {
             ResultSet resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses ");
             resultSet.next();
             assertEquals(true,resultSet.getInt(1) > 5);
