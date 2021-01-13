@@ -20,14 +20,14 @@ class GroupsControllerTest {
     }
 
     @Test
-    void groupsWithLessOrEqualsStudentCount() throws SQLException {
+    void groupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService() throws SQLException {
         given(groupsService.searchGroupsWithLessOrEqualsStudentCount(15)).willReturn(Arrays.asList(new Group("fv-05"),new Group("fk-03"),new Group("rt-01")));
         String expected = "fv-05\n" + "fk-03\n" + "rt-01\n";
         assertEquals(expected, groupsController.GroupsWithLessOrEqualsStudentCount(15));
     }
 
     @Test
-    void saveGroupsTable() {
+    void saveGroupsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(groupsService).saveGroupsTable();
         groupsController.saveGroupsTable();
         verify(groupsService,times(1)).saveGroupsTable();

@@ -76,7 +76,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void addNewStudent() throws SQLException {
+    void addNewStudent_WhenEverythingGoesRight_thenThisStudentExist() throws SQLException {
         studentDao.addNewStudent("Пётр","Капица");
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
@@ -87,7 +87,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void addStudentToCourse() throws SQLException{
+    void addStudentToCourse_WhenEverythingGoesRight_thenShouldBeStudentOnThisCourse() throws SQLException{
         studentDao.addStudentToCourse(1,1);
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
@@ -98,7 +98,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void deleteStudentById() throws SQLException{
+    void deleteStudentById_WhenTablesAreFilled_thenShouldBeNoStudentsWithSameId() throws SQLException{
         studentDao.deleteStudentById(1);
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
@@ -109,7 +109,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void removeStudentFromCourse() {
+    void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         studentDao = mock(StudentDao.class);
         doNothing().when(studentDao).removeStudentFromCourse(1,1);
         studentDao.removeStudentFromCourse(1,1);
@@ -117,7 +117,7 @@ class StudentDaoTest {
     }
 
     @Test
-    void saveStudentsTable() {
+    void saveStudentsTable_WhenEverythingGoesRight_thenShouldBeDataInATable() {
         try {
             DataSource dataSource = new DataSource();
             Statement statement = dataSource.getConnection().createStatement();
@@ -130,12 +130,12 @@ class StudentDaoTest {
     }
 
     @Test
-    void showAllStudents() {
+    void showAllStudents_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
         assertEquals(true,!studentDao.showAllStudents().isEmpty());
     }
 
     @Test
-    void showAllStudentsEmpty() throws SQLException{
+    void showAllStudents_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");

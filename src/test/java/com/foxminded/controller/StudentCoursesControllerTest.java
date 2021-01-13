@@ -15,7 +15,7 @@ class StudentCoursesControllerTest {
     }
 
     @Test
-    void saveCoursesTable() {
+    void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(studentCoursesService).saveStudentCoursesTable();
         studentCoursesController.saveStudentCoursesTable();
         verify(studentCoursesService,times(1)).saveStudentCoursesTable();

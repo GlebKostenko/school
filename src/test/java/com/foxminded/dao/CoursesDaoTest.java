@@ -74,7 +74,7 @@ class CoursesDaoTest {
     }
 
     @Test
-    void saveCoursesTable() {
+    void saveCoursesTable_WhenEverythingGoesRight_thenShouldBeDataInATable() {
         try {
             DataSource dataSource = new DataSource();
             Statement statement = dataSource.getConnection().createStatement();
@@ -87,16 +87,16 @@ class CoursesDaoTest {
     }
 
     @Test
-    void showAllCourses() {
+    void showAllCourses_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
         assertEquals(true,!coursesDao.showAllCourses().isEmpty());
     }
 
     @Test
-    void findStudentsRelatedToCourse() {
+    void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
         assertEquals(true,!coursesDao.findStudentsRelatedToCourse("Math").isEmpty());
     }
     @Test
-    void showAllCoursesEmpty() throws SQLException{
+    void showAllCourses_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");
@@ -105,7 +105,7 @@ class CoursesDaoTest {
     }
 
     @Test
-    void findStudentsRelatedToCourseEmpty() throws SQLException{
+    void findStudentsRelatedToCourse_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");

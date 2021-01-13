@@ -23,14 +23,14 @@ class CoursesServiceTest {
         coursesService = new CoursesService(coursesDao);
     }
     @Test
-    void saveCoursesTable() throws URISyntaxException, IOException {
+    void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException, IOException {
         doNothing().when(coursesDao).saveCoursesTable(anyList());
         coursesService.saveCoursesTable();
         verify(coursesDao,times(1)).saveCoursesTable(anyList());
     }
 
     @Test
-    void findStudentsRelatedToCourse(){
+    void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeTheSameResultListAsDaoReturn(){
         try {
             given(coursesDao.findStudentsRelatedToCourse("Math")).
                     willReturn(Arrays.asList(new Student(2, "Ivan", "Ivanov")));
@@ -42,7 +42,7 @@ class CoursesServiceTest {
     }
 
     @Test
-    void showAllCourses(){
+    void showAllCourses_WhenTablesAreFilled_thenShouldBeTheSameResultListAsDaoReturn(){
         try {
             given(coursesDao.showAllCourses()).
                     willReturn(Arrays.asList(new Course("Math", "Intresting")));

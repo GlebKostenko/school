@@ -26,42 +26,42 @@ class StudentControllerTest {
     }
 
     @Test
-    void removeStudentFromCourse() {
+    void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(studentService).removeStudentFromCourse(15,2);
         studentController.removeStudentFromCourse(15,2);
         verify(studentService,times(1)).removeStudentFromCourse(15,2);
     }
 
     @Test
-    void saveStudentsTable() throws URISyntaxException, IOException {
+    void saveStudentsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException, IOException {
         doNothing().when(studentService).saveStudentsTable();
         studentController.saveStudentsTable();
         verify(studentService,times(1)).saveStudentsTable();
     }
 
     @Test
-    void addNewStudent() {
+    void addNewStudent_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(studentService).addNewStudent("Ivan","Ivanov");
         studentController.addNewStudent("Ivan","Ivanov");
         verify(studentService,times(1)).addNewStudent("Ivan","Ivanov");
     }
 
     @Test
-    void addStudentToCourse() {
+    void addStudentToCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(studentService).addStudentToCourse(1,1);
         studentController.addStudentToCourse(1,1);
         verify(studentService,times(1)).addStudentToCourse(1,1);
     }
 
     @Test
-    void deleteStudentById() {
+    void deleteStudentById_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(studentService).deleteStudentById(1);
         studentController.deleteStudentById(1);
         verify(studentService,times(1)).deleteStudentById(1);
     }
 
     @Test
-    void showAllStudents(){
+    void showAllStudents_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService(){
         try {
             given(studentService.showAllStudents()).
                     willReturn(Arrays.asList(new StudentInf(1, "Ivan", "Ivanov")));

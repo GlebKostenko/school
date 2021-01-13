@@ -25,14 +25,14 @@ class GroupsServiceTest {
     }
 
     @Test
-    void saveGroupsTable() {
+    void saveGroupsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
         doNothing().when(groupsDao).saveGroupsTable(anyList());
         groupsService.saveGroupsTable();
         verify(groupsDao,times(1)).saveGroupsTable(anyList());
     }
 
     @Test
-    void searchGroupsWithLessOrEqualsStudentCount(){
+    void searchGroupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeTheSameResultListAsDaoReturn(){
         try {
             given(groupsDao.searchGroupsWithLessOrEqualsStudentCount(23)).
                     willReturn(Arrays.asList(new Group("fx-01"), new Group("us-01")));

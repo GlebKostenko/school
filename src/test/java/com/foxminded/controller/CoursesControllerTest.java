@@ -24,14 +24,14 @@ class CoursesControllerTest {
     }
 
     @Test
-    void saveCoursesTable() throws URISyntaxException, IOException {
+    void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException, IOException {
         doNothing().when(coursesService).saveCoursesTable();
         coursesController.saveCoursesTable();
         verify(coursesService,times(1)).saveCoursesTable();
     }
 
     @Test
-    void findStudentsRelatedToCourse() throws SQLException{
+    void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService() throws SQLException{
         given(coursesService.findStudentsRelatedToCourse("Math")).willReturn(Arrays.asList(
                 new Student(1,"Victor","Ivanov"),
                 new Student(2,"Alexander","Chernyev"),
@@ -42,7 +42,7 @@ class CoursesControllerTest {
     }
 
     @Test
-    void showAllCourses(){
+    void showAllCourses_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService(){
         try {
             given(coursesService.showAllCourses()).
                     willReturn(Arrays.asList(new Course("Math", "Intresting")));

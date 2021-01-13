@@ -74,7 +74,7 @@ class GroupsDaoTest {
     }
 
     @Test
-    void saveGroupsTable() {
+    void saveGroupsTable_WhenEverythingGoesRight_thenShouldBeDataInATable() {
         try {
             DataSource dataSource = new DataSource();
             Statement statement = dataSource.getConnection().createStatement();
@@ -87,12 +87,12 @@ class GroupsDaoTest {
     }
 
     @Test
-    void searchGroupsWithLessOrEqualsStudentCount() {
+    void searchGroupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
         assertEquals(true,!groupsDao.searchGroupsWithLessOrEqualsStudentCount(15).isEmpty());
     }
 
     @Test
-    void searchGroupsWithLessOrEqualsStudentCountEmpty() throws SQLException{
+    void searchGroupsWithLessOrEqualsStudentCount_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");

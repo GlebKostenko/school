@@ -72,7 +72,7 @@ class StudentCoursesDaoTest {
     }
 
     @Test
-    void saveStudentCoursesTable() {
+    void saveStudentCoursesTable_WhenEverythingGoesRight_thenShouldBeDataInTable() {
         try {
             DataSource dataSource = new DataSource();
             Statement statement = dataSource.getConnection().createStatement();
