@@ -78,7 +78,7 @@ class StudentCoursesDaoTest {
             Statement statement = dataSource.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM student_courses ");
             resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
+            assertTrue(resultSet.getInt(1) > 100);
         }catch (SQLException e){
             e.printStackTrace();
         }

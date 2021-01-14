@@ -32,13 +32,13 @@ class CoursesControllerTest {
 
     @Test
     void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService() throws SQLException{
-        given(coursesService.findStudentsRelatedToCourse("Math")).willReturn(Arrays.asList(
+        given(coursesService.findStudentsRelatedToCourse(1)).willReturn(Arrays.asList(
                 new Student(1,"Victor","Ivanov"),
                 new Student(2,"Alexander","Chernyev"),
                 new Student(3,"Iakov","Dymarski"))
         );
         String expected = "Victor Ivanov\n" + "Alexander Chernyev\n" + "Iakov Dymarski\n";
-        assertEquals(expected, coursesController.findStudentsRelatedToCourse("Math"));
+        assertEquals(expected, coursesController.findStudentsRelatedToCourse(1));
     }
 
     @Test
@@ -46,7 +46,7 @@ class CoursesControllerTest {
         try {
             given(coursesService.showAllCourses()).
                     willReturn(Arrays.asList(new Course("Math", "Intresting")));
-            String expected = "Math\n";
+            String expected = "1.Math\n";
             assertEquals(expected, coursesController.showAllCourses());
         }catch (SQLException e){
             e.printStackTrace();

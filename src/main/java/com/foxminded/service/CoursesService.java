@@ -30,8 +30,8 @@ public class CoursesService {
         return coursesDao.showAllCourses();
     }
 
-    public List<Student> findStudentsRelatedToCourse(String courseName) throws SQLException {
-       return coursesDao.findStudentsRelatedToCourse(courseName);
+    public List<Student> findStudentsRelatedToCourse(int courseId) throws SQLException {
+       return coursesDao.findStudentsRelatedToCourse(courseId);
     }
 
     private List<Course> generateCourses() throws URISyntaxException,IOException{

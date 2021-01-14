@@ -48,15 +48,15 @@ public class CoursesDao {
         }
     }
 
-    public List<Student> findStudentsRelatedToCourse(String courseName) {
+    public List<Student> findStudentsRelatedToCourse(int courseId) {
         try (DataSource dataSource = new DataSource();
              PreparedStatement preparedStatement =
                      dataSource.getConnection()
                              .prepareStatement("SELECT st.group_id,st.first_name,st.last_name FROM student_courses sc " +
                                      "LEFT JOIN students st ON st.student_id = sc.student_id " +
-                                     "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_name = ?"))
+                                     "LEFT JOIN courses c ON c.course_id = sc.course_id WHERE c.course_id = ?"))
         {
-            preparedStatement.setString(1, courseName);
+            preparedStatement.setInt(1, courseId);
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Student> result = new ArrayList<>();
             while (resultSet.next()) {

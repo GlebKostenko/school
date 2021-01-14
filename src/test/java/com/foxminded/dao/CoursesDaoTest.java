@@ -88,12 +88,12 @@ class CoursesDaoTest {
 
     @Test
     void showAllCourses_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
-        assertEquals(true,!coursesDao.showAllCourses().isEmpty());
+        assertTrue(!coursesDao.showAllCourses().isEmpty());
     }
 
     @Test
     void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
-        assertEquals(true,!coursesDao.findStudentsRelatedToCourse("Math").isEmpty());
+        assertTrue(!coursesDao.findStudentsRelatedToCourse(1).isEmpty());
     }
     @Test
     void showAllCourses_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
@@ -101,7 +101,7 @@ class CoursesDaoTest {
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");
         statement.execute("DELETE FROM courses");
-        assertEquals(Arrays.asList(),coursesDao.showAllCourses());
+        assertTrue(coursesDao.showAllCourses().isEmpty());
     }
 
     @Test
@@ -109,6 +109,6 @@ class CoursesDaoTest {
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");
-        assertEquals(Arrays.asList(),coursesDao.findStudentsRelatedToCourse(Mockito.anyString()));
+        assertTrue(coursesDao.findStudentsRelatedToCourse(Mockito.anyInt()).isEmpty());
     }
 }

@@ -14,16 +14,18 @@ public class CoursesController {
         this.coursesService = coursesService;
     }
 
-    public String findStudentsRelatedToCourse(String courseName) throws SQLException {
-        return coursesService.findStudentsRelatedToCourse(courseName).stream().map(x -> {
+    public String findStudentsRelatedToCourse(int courseId) throws SQLException {
+        return coursesService.findStudentsRelatedToCourse(courseId).stream().map(x -> {
             return x.getFirstName()+" "+ x.getLastName() + "\n";
         }).collect(Collectors.joining());
     }
 
     public String showAllCourses() throws SQLException {
         StringBuilder result = new StringBuilder();
+        int idOfCourse = 1;
         for(Course course : coursesService.showAllCourses() ){
-            result.append(course.getCourseName() + "\n");
+            result.append(idOfCourse + "." + course.getCourseName() + "\n");
+            ++idOfCourse;
         }
         return result.toString();
     }

@@ -1,6 +1,8 @@
 package com.foxminded.service;
 
 import com.foxminded.dao.*;
+import com.foxminded.model.Student;
+import com.foxminded.model.StudentInf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -69,11 +71,7 @@ class StudentServiceTest {
         StudentService studentService = new StudentService(studentDao);
         studentService.saveStudentsTable();
         try {
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
+            assertTrue(!studentService.showAllStudents().isEmpty());
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -84,10 +82,7 @@ class StudentServiceTest {
         studentService.addNewStudent("Пётр","Капица");
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
-                "WHERE first_name = 'Пётр' AND last_name = 'Капица'");
-        resultSet.next();
-        assertEquals(1,resultSet.getInt(1));
+        assertTrue(studentService.showAllStudents().contains(new StudentInf(1,"Пётр","Капица")));
     }
 
     @Test
@@ -102,23 +97,34 @@ class StudentServiceTest {
         CoursesService coursesService = new CoursesService(coursesDao);
         coursesService.saveCoursesTable();
         studentService.addStudentToCourse(1,1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses " +
-                "WHERE student_id=1 AND course_id = 1");
-        resultSet.next();
-        assertEquals(true,resultSet.getInt(1) > 0);
+        StudentInf studentInf = studentDao.showAllStudents().get(0);
+        boolean exist = false;
+        for(Student student :  coursesDao.findStudentsRelatedToCourse(1)){
+            if(studentInf.getFirstName().equals(student.getFirstName())
+                    && studentInf.getLastName().equals(student.getLastName()))
+            {
+                exist = true;
+            }
+        }
+        assertTrue(exist);
     }
 
     @Test
-    void deleteStudentById_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws SQLException{
+    void deleteStudentById_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException,IOException,SQLException{
+        GroupsDao groupsDao = new GroupsDao();
+        GroupsService groupsService = new GroupsService(groupsDao);
+        groupsService.saveGroupsTable();
+        StudentDao studentDao = new StudentDao();
+        StudentService studentService = new StudentService(studentDao);
+        studentService.saveStudentsTable();
         studentService.deleteStudentById(1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
-                "WHERE student_id=1");
-        resultSet.next();
-        assertEquals(0,resultSet.getInt(1));
+        boolean dontExist = true;
+        for(StudentInf studentInf : studentService.showAllStudents()){
+            if(studentInf.getStudentId() == 1){
+                dontExist = false;
+            }
+        }
+        assertTrue(dontExist);
     }
 
     @Test
@@ -137,11 +143,16 @@ class StudentServiceTest {
         studentCoursesService.saveStudentCoursesTable();
         studentService.addStudentToCourse(1,1);
         studentService.removeStudentFromCourse(1,1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses WHERE student_id = 1 AND course_id = 1");
-        resultSet.next();
-        assertTrue(resultSet.getInt(1) == 0);
+        StudentInf studentInf = studentService.showAllStudents().get(0);
+        boolean removedStudent = true;
+        for(Student student : coursesDao.findStudentsRelatedToCourse(1)){
+            if(student.getFirstName().equals(studentInf.getFirstName())
+                    && student.getLastName().equals(studentInf.getLastName()))
+            {
+                removedStudent = false;
+            }
+        }
+        assertTrue(removedStudent);
     }
 
     @Test

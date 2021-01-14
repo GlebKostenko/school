@@ -93,8 +93,8 @@ public class Main {
                 if (number_query.nextLine().equals("Y")){
                     System.out.println(coursesController.showAllCourses());
                 }
-                System.out.println("Enter course name:");
-                System.out.println(coursesController.findStudentsRelatedToCourse(number_query.nextLine()));
+                System.out.println("Enter course id:");
+                System.out.println(coursesController.findStudentsRelatedToCourse(Integer.parseInt(number_query.nextLine())));
             }
             System.out.println("If you would like to continue print Y,in other case print N");
             String continueOrNot = number_query.nextLine();

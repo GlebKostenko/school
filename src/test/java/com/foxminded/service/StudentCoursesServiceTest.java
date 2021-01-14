@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
@@ -73,11 +74,7 @@ class StudentCoursesServiceTest {
             StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
             StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
             studentCoursesService.saveStudentCoursesTable();
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM student_courses ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
+            assertTrue(!coursesService.findStudentsRelatedToCourse(1).isEmpty());
         }catch (SQLException e){
             e.printStackTrace();
         }

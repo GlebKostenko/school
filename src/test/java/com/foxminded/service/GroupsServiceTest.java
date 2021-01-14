@@ -2,6 +2,8 @@ package com.foxminded.service;
 
 import com.foxminded.dao.*;
 import com.foxminded.model.Group;
+import com.foxminded.model.Student;
+import com.foxminded.model.StudentInf;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,7 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.BDDMockito.given;
@@ -72,16 +75,27 @@ class GroupsServiceTest {
     }
 
     @Test
-    void saveGroupsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
+    void saveGroupsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException,IOException{
         try {
             GroupsDao groupsDao = new GroupsDao();
             GroupsService groupsService = new GroupsService(groupsDao);
             groupsService.saveGroupsTable();
-            DataSource dataSource = new DataSource();
-            Statement statement = dataSource.getConnection().createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM groups ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 5);
+            StudentDao studentDao = new StudentDao();
+            StudentService studentService = new StudentService(studentDao);
+            studentService.saveStudentsTable();
+            CoursesDao coursesDao = new CoursesDao();
+            CoursesService coursesService = new CoursesService(coursesDao);
+            coursesService.saveCoursesTable();
+            StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
+            StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
+            studentCoursesService.saveStudentCoursesTable();
+            boolean notNullGroupId = true;
+            for(Student student : coursesService.findStudentsRelatedToCourse(1)){
+                if(student.getGroupId() == 0){
+                    notNullGroupId = false;
+                }
+            }
+            assertTrue(notNullGroupId);
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -96,7 +110,7 @@ class GroupsServiceTest {
         StudentDao studentDao = new StudentDao();
         StudentService studentService = new StudentService(studentDao);
         studentService.saveStudentsTable();
-        assertEquals(true,!groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
+        assertTrue(!groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
     }
 
 }

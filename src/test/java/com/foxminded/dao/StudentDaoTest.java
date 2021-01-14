@@ -1,5 +1,7 @@
 package com.foxminded.dao;
 
+import com.foxminded.model.Student;
+import com.foxminded.model.StudentInf;
 import com.foxminded.service.CoursesService;
 import com.foxminded.service.GroupsService;
 import com.foxminded.service.StudentCoursesService;
@@ -78,45 +80,53 @@ class StudentDaoTest {
     @Test
     void addNewStudent_WhenEverythingGoesRight_thenThisStudentExist() throws SQLException {
         studentDao.addNewStudent("Пётр","Капица");
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
-                "WHERE first_name = 'Пётр' AND last_name = 'Капица'");
-        resultSet.next();
-        assertEquals(1,resultSet.getInt(1));
+        assertTrue(studentDao.showAllStudents().contains(new StudentInf(201,"Пётр","Капица")));
     }
 
     @Test
     void addStudentToCourse_WhenEverythingGoesRight_thenShouldBeStudentOnThisCourse() throws SQLException{
+        CoursesDao coursesDao = new CoursesDao();
         studentDao.addStudentToCourse(1,1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses " +
-                "WHERE student_id=1 AND course_id = 1");
-        resultSet.next();
-        assertEquals(true,resultSet.getInt(1) > 0);
+        StudentInf studentInf = studentDao.showAllStudents().get(0);
+        boolean exist = false;
+        for(Student student :  coursesDao.findStudentsRelatedToCourse(1)){
+            if(studentInf.getFirstName().equals(student.getFirstName())
+                    && studentInf.getLastName().equals(student.getLastName()))
+            {
+                       exist = true;
+            }
+        }
+        assertTrue(exist);
     }
 
     @Test
     void deleteStudentById_WhenTablesAreFilled_thenShouldBeNoStudentsWithSameId() throws SQLException{
+
         studentDao.deleteStudentById(1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM students " +
-                "WHERE student_id=1");
-        resultSet.next();
-        assertEquals(0,resultSet.getInt(1));
+        boolean dontExist = true;
+        for(StudentInf studentInf : studentDao.showAllStudents()){
+            if(studentInf.getStudentId() == 1){
+                dontExist = false;
+            }
+        }
+        assertTrue(dontExist);
     }
 
     @Test
     void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeStudentDoesNotHaveThisCourse()throws SQLException {
         studentDao.addStudentToCourse(1,1);
         studentDao.removeStudentFromCourse(1,1);
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(1) FROM student_courses WHERE student_id = 1 AND course_id = 1");
-        resultSet.next();
-        assertTrue(resultSet.getInt(1) == 0);
+        StudentInf studentInf = studentDao.showAllStudents().get(0);
+        CoursesDao coursesDao = new CoursesDao();
+        boolean removedStudent = true;
+        for(Student student : coursesDao.findStudentsRelatedToCourse(1)){
+            if(student.getFirstName().equals(studentInf.getFirstName())
+                    && student.getLastName().equals(studentInf.getLastName()))
+            {
+                removedStudent = false;
+            }
+        }
+        assertTrue(removedStudent);
     }
 
     @Test
@@ -126,7 +136,7 @@ class StudentDaoTest {
             Statement statement = dataSource.getConnection().createStatement();
             ResultSet  resultSet = statement.executeQuery("SELECT COUNT(student_id) FROM students");
             resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 100);
+            assertTrue(resultSet.getInt(1) > 100);
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -134,7 +144,7 @@ class StudentDaoTest {
 
     @Test
     void showAllStudents_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
-        assertEquals(true,!studentDao.showAllStudents().isEmpty());
+        assertTrue(!studentDao.showAllStudents().isEmpty());
     }
 
     @Test
@@ -143,6 +153,6 @@ class StudentDaoTest {
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");
         statement.execute("DELETE FROM students");
-        assertEquals(Arrays.asList(),studentDao.showAllStudents());
+        assertTrue(studentDao.showAllStudents().isEmpty());
     }
 }

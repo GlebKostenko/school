@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CoursesServiceTest {
     private CoursesDao coursesDao = new CoursesDao();
@@ -65,9 +66,7 @@ class CoursesServiceTest {
              Statement statement = dataSource.getConnection().createStatement())
         {
             coursesService.saveCoursesTable();
-            ResultSet resultSet = statement.executeQuery("SELECT COUNT(course_id) FROM courses ");
-            resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 5);
+            assertTrue(!coursesService.showAllCourses().isEmpty());
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -75,8 +74,8 @@ class CoursesServiceTest {
     @Test
     void findStudentsRelatedToCourse_WhenTablesAreFilled_thenShouldBeTheSameResultListAsDaoReturn(){
         try{
-            assertEquals(coursesDao.findStudentsRelatedToCourse("Math"),
-                    coursesService.findStudentsRelatedToCourse("Math"));
+            assertEquals(coursesDao.findStudentsRelatedToCourse(1),
+                    coursesService.findStudentsRelatedToCourse(1));
         }catch (SQLException e){
             e.printStackTrace();
         }

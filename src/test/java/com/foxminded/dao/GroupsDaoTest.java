@@ -80,7 +80,7 @@ class GroupsDaoTest {
             Statement statement = dataSource.getConnection().createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT COUNT(group_id) FROM groups ");
             resultSet.next();
-            assertEquals(true,resultSet.getInt(1) > 5);
+            assertTrue(resultSet.getInt(1) > 5);
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -88,7 +88,7 @@ class GroupsDaoTest {
 
     @Test
     void searchGroupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeNotEmptyResultList() {
-        assertEquals(true,!groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
+        assertTrue(!groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
     }
 
     @Test
@@ -98,6 +98,6 @@ class GroupsDaoTest {
         statement.execute("DELETE FROM student_courses");
         statement.execute("DELETE FROM students");
         statement.execute("DELETE FROM groups ");
-        assertEquals(Arrays.asList(),groupsDao.searchGroupsWithLessOrEqualsStudentCount(Mockito.anyInt()));
+        assertTrue(groupsDao.searchGroupsWithLessOrEqualsStudentCount(Mockito.anyInt()).isEmpty());
     }
 }
