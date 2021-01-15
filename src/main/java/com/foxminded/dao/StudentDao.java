@@ -107,4 +107,10 @@ public class StudentDao {
         }
     }
 
+    public void deleteAll() throws SQLException{
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        statement.execute("DELETE FROM student_courses");
+        statement.execute("DELETE FROM students");
+    }
 }

@@ -60,7 +60,7 @@ class StudentDaoTest {
         CoursesService coursesService = new CoursesService(coursesDao);
         coursesService.saveCoursesTable();
         StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
-        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
+        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao,studentDao);
         studentCoursesService.saveStudentCoursesTable();
     }
     @AfterEach
@@ -149,10 +149,7 @@ class StudentDaoTest {
 
     @Test
     void showAllStudents_WhenTableAreEmpty_thenShouldBeEmptyResultList() throws SQLException{
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        statement.execute("DELETE FROM student_courses");
-        statement.execute("DELETE FROM students");
+        studentDao.deleteAll();
         assertTrue(studentDao.showAllStudents().isEmpty());
     }
 }

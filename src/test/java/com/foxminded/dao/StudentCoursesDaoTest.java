@@ -54,7 +54,7 @@ class StudentCoursesDaoTest {
         CoursesService coursesService = new CoursesService(coursesDao);
         coursesService.saveCoursesTable();
         StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
-        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
+        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao,studentDao);
         studentCoursesService.saveStudentCoursesTable();
     }
     @AfterEach

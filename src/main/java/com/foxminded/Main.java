@@ -24,7 +24,7 @@ public class Main {
         GroupsService groupsService = new GroupsService(groupsDao);
         CoursesService coursesService = new CoursesService(coursesDao);
         StudentService studentService = new StudentService(studentDao);
-        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
+        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao,studentDao);
         GroupsController groupsController = new GroupsController(groupsService);
         CoursesController coursesController = new CoursesController(coursesService);
         StudentController studentController = new StudentController(studentService);

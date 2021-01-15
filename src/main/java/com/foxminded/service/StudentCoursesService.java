@@ -13,8 +13,9 @@ public class StudentCoursesService {
     private StudentCoursesDao studentCoursesDao;
     private StudentDao studentDao;
 
-    public StudentCoursesService(StudentCoursesDao studentCoursesDao) {
+    public StudentCoursesService(StudentCoursesDao studentCoursesDao,StudentDao studentDao) {
         this.studentCoursesDao = studentCoursesDao;
+        this.studentDao = studentDao;
     }
 
     public void saveStudentCoursesTable(){
@@ -22,7 +23,6 @@ public class StudentCoursesService {
     }
     private List<StudentCourse> generateCoursesForStudent() {
         List<StudentCourse> result = new ArrayList<>();
-        studentDao = new StudentDao();
         for (StudentInf studentInf : studentDao.showAllStudents()) {
             int numberOfCoursesForStudent = 1 + (int) (Math.random() * 3);
                 int[] numbersOfCoursesThatUsersAlreadyHas = new int[3];

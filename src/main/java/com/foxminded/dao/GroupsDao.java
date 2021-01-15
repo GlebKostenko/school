@@ -3,6 +3,7 @@ package com.foxminded.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,4 +48,11 @@ public class GroupsDao {
         }
     }
 
+    public void deleteAll() throws SQLException{
+        DataSource dataSource = new DataSource();
+        Statement statement = dataSource.getConnection().createStatement();
+        statement.execute("DELETE FROM student_courses");
+        statement.execute("DELETE FROM students");
+        statement.execute("DELETE FROM groups ");
+    }
 }
