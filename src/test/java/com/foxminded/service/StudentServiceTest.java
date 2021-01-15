@@ -12,12 +12,18 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
 class StudentServiceTest {
-    private StudentDao studentDao = new StudentDao();
+    private StudentDao studentDao = mock(StudentDao.class);
     private StudentService studentService = new StudentService(studentDao);
     @BeforeEach
     void createTables()throws Exception{
@@ -64,112 +70,44 @@ class StudentServiceTest {
 
     @Test
     void saveStudentsTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException, IOException {
-        GroupsDao groupsDao = new GroupsDao();
-        GroupsService groupsService = new GroupsService(groupsDao);
-        groupsService.saveGroupsTable();
-        StudentDao studentDao = new StudentDao();
-        StudentService studentService = new StudentService(studentDao);
+        doNothing().when(studentDao).saveStudentsTable(any());
         studentService.saveStudentsTable();
-        try {
-            assertTrue(!studentService.showAllStudents().isEmpty());
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+        verify(studentDao,times(1)).saveStudentsTable(any());
     }
 
     @Test
     void addNewStudent_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws SQLException {
-        studentService.addNewStudent("Пётр","Капица");
-        DataSource dataSource = new DataSource();
-        Statement statement = dataSource.getConnection().createStatement();
-        assertTrue(studentService.showAllStudents().contains(new StudentInf(1,"Пётр","Капица")));
+        doNothing().when(studentDao).addNewStudent("Петр","Капицы");
+        studentService.addNewStudent("Петр","Капицы");
+        verify(studentDao,times(1)).addNewStudent("Петр","Капицы");
     }
 
     @Test
     void addStudentToCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws SQLException,URISyntaxException,IOException{
-        GroupsDao groupsDao = new GroupsDao();
-        GroupsService groupsService = new GroupsService(groupsDao);
-        groupsService.saveGroupsTable();
-        StudentDao studentDao = new StudentDao();
-        StudentService studentService = new StudentService(studentDao);
-        studentService.saveStudentsTable();
-        CoursesDao coursesDao = new CoursesDao();
-        CoursesService coursesService = new CoursesService(coursesDao);
-        coursesService.saveCoursesTable();
+        doNothing().when(studentDao).addStudentToCourse(1,1);
         studentService.addStudentToCourse(1,1);
-        StudentInf studentInf = studentDao.showAllStudents().get(0);
-        boolean exist = false;
-        for(Student student :  coursesDao.findStudentsRelatedToCourse(1)){
-            if(studentInf.getFirstName().equals(student.getFirstName())
-                    && studentInf.getLastName().equals(student.getLastName()))
-            {
-                exist = true;
-            }
-        }
-        assertTrue(exist);
+        verify(studentDao,times(1)).addStudentToCourse(1,1);
     }
 
     @Test
     void deleteStudentById_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException,IOException,SQLException{
-        GroupsDao groupsDao = new GroupsDao();
-        GroupsService groupsService = new GroupsService(groupsDao);
-        groupsService.saveGroupsTable();
-        StudentDao studentDao = new StudentDao();
-        StudentService studentService = new StudentService(studentDao);
-        studentService.saveStudentsTable();
+        doNothing().when(studentDao).deleteStudentById(1);
         studentService.deleteStudentById(1);
-        boolean dontExist = true;
-        for(StudentInf studentInf : studentService.showAllStudents()){
-            if(studentInf.getStudentId() == 1){
-                dontExist = false;
-            }
-        }
-        assertTrue(dontExist);
+        verify(studentDao,times(1)).deleteStudentById(1);
     }
 
     @Test
     void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws SQLException,IOException,URISyntaxException{
-        GroupsDao groupsDao = new GroupsDao();
-        GroupsService groupsService = new GroupsService(groupsDao);
-        groupsService.saveGroupsTable();
-        StudentDao studentDao = new StudentDao();
-        StudentService studentService = new StudentService(studentDao);
-        studentService.saveStudentsTable();
-        CoursesDao coursesDao = new CoursesDao();
-        CoursesService coursesService = new CoursesService(coursesDao);
-        coursesService.saveCoursesTable();
-        StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
-        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
-        studentCoursesService.saveStudentCoursesTable();
-        studentService.addStudentToCourse(1,1);
+        doNothing().when(studentDao).removeStudentFromCourse(1,1);
         studentService.removeStudentFromCourse(1,1);
-        StudentInf studentInf = studentService.showAllStudents().get(0);
-        boolean removedStudent = true;
-        for(Student student : coursesDao.findStudentsRelatedToCourse(1)){
-            if(student.getFirstName().equals(studentInf.getFirstName())
-                    && student.getLastName().equals(studentInf.getLastName()))
-            {
-                removedStudent = false;
-            }
-        }
-        assertTrue(removedStudent);
+        verify(studentDao,times(1)).removeStudentFromCourse(1,1);
     }
 
     @Test
     void showAllStudents_WhenTablesAreFilled_thenShouldBeTheSameResultListAsDaoReturn()throws IOException,URISyntaxException,SQLException{
-        GroupsDao groupsDao = new GroupsDao();
-        GroupsService groupsService = new GroupsService(groupsDao);
-        groupsService.saveGroupsTable();
-        StudentDao studentDao = new StudentDao();
-        StudentService studentService = new StudentService(studentDao);
-        studentService.saveStudentsTable();
-        CoursesDao coursesDao = new CoursesDao();
-        CoursesService coursesService = new CoursesService(coursesDao);
-        coursesService.saveCoursesTable();
-        StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
-        StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
-        studentCoursesService.saveStudentCoursesTable();
-        assertEquals(studentService.showAllStudents(),studentDao.showAllStudents());
+        given(studentDao.showAllStudents()).willReturn(Arrays.asList(new StudentInf(1,"Ivan","Ivanov")));
+        List<StudentInf> expected = Arrays.asList(new StudentInf(1,"Ivan","Ivanov"));
+        assertEquals(expected,studentService.showAllStudents());
     }
 
 }

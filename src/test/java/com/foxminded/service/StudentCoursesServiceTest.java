@@ -1,22 +1,23 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.*;
+import com.foxminded.dao.DataSource;
+import com.foxminded.dao.StudentCoursesDao;
+import com.foxminded.dao.StudentDao;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 class StudentCoursesServiceTest {
+    StudentCoursesDao studentCoursesDao = mock(StudentCoursesDao.class);
+    StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
     @BeforeEach
     void createTables()throws Exception{
         String createGroupsTable= "create table groups(" +
@@ -61,23 +62,9 @@ class StudentCoursesServiceTest {
     }
     @Test
     void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws IOException, URISyntaxException,SQLException {
-        try {
-            GroupsDao groupsDao = new GroupsDao();
-            GroupsService groupsService = new GroupsService(groupsDao);
-            groupsService.saveGroupsTable();
-            StudentDao studentDao = new StudentDao();
-            StudentService studentService = new StudentService(studentDao);
-            studentService.saveStudentsTable();
-            CoursesDao coursesDao = new CoursesDao();
-            CoursesService coursesService = new CoursesService(coursesDao);
-            coursesService.saveCoursesTable();
-            StudentCoursesDao studentCoursesDao = new StudentCoursesDao();
-            StudentCoursesService studentCoursesService = new StudentCoursesService(studentCoursesDao);
-            studentCoursesService.saveStudentCoursesTable();
-            assertTrue(!coursesService.findStudentsRelatedToCourse(1).isEmpty());
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
+        doNothing().when(studentCoursesDao).saveStudentCoursesTable(any());
+        studentCoursesService.saveStudentCoursesTable();
+        verify(studentCoursesDao,times(1)).saveStudentCoursesTable(any());
     }
 
 }

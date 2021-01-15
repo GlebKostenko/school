@@ -98,6 +98,6 @@ class GroupsDaoTest {
         statement.execute("DELETE FROM student_courses");
         statement.execute("DELETE FROM students");
         statement.execute("DELETE FROM groups ");
-        assertTrue(groupsDao.searchGroupsWithLessOrEqualsStudentCount(Mockito.anyInt()).isEmpty());
+        assertTrue(groupsDao.searchGroupsWithLessOrEqualsStudentCount(20).isEmpty());
     }
 }

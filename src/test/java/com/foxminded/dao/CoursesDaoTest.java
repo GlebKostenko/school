@@ -109,6 +109,6 @@ class CoursesDaoTest {
         DataSource dataSource = new DataSource();
         Statement statement = dataSource.getConnection().createStatement();
         statement.execute("DELETE FROM student_courses");
-        assertTrue(coursesDao.findStudentsRelatedToCourse(Mockito.anyInt()).isEmpty());
+        assertTrue(coursesDao.findStudentsRelatedToCourse(20).isEmpty());
     }
 }
