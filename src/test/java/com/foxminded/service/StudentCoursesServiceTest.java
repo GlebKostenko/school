@@ -1,17 +1,13 @@
 package com.foxminded.service;
 
-import com.foxminded.dao.DataSource;
 import com.foxminded.dao.StudentCoursesDao;
 import com.foxminded.dao.StudentDao;
 import com.foxminded.model.StudentInf;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;

@@ -16,12 +16,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class CoursesControllerTest {
-    CoursesService coursesService = mock(CoursesService.class);
-    private CoursesController coursesController;
-    CoursesControllerTest(){
-        coursesController = new CoursesController(coursesService);
-    }
-
+    private CoursesService coursesService = mock(CoursesService.class);
+    private CoursesController coursesController = new CoursesController(coursesService);
     @Test
     void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() throws URISyntaxException, IOException {
         doNothing().when(coursesService).saveCoursesTable();

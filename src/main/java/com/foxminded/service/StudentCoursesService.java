@@ -5,7 +5,6 @@ import com.foxminded.dao.StudentDao;
 import com.foxminded.model.StudentCourse;
 import com.foxminded.model.StudentInf;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 

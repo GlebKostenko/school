@@ -8,11 +8,8 @@ import static org.mockito.Mockito.times;
 
 class StudentCoursesControllerTest {
 
-    StudentCoursesService studentCoursesService = mock(StudentCoursesService.class);
-    private StudentCoursesController studentCoursesController;
-    StudentCoursesControllerTest(){
-        studentCoursesController = new StudentCoursesController(studentCoursesService);
-    }
+    private StudentCoursesService studentCoursesService = mock(StudentCoursesService.class);
+    private StudentCoursesController studentCoursesController = new StudentCoursesController(studentCoursesService);
 
     @Test
     void saveCoursesTable_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {

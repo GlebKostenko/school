@@ -13,11 +13,8 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 class GroupsControllerTest {
-    GroupsService groupsService = mock(GroupsService.class);
-    private GroupsController groupsController;
-    GroupsControllerTest(){
-        groupsController = new GroupsController(groupsService);
-    }
+    private GroupsService groupsService = mock(GroupsService.class);
+    private GroupsController groupsController = new GroupsController(groupsService);
 
     @Test
     void groupsWithLessOrEqualsStudentCount_WhenTablesAreFilled_thenShouldBeFormattedResultListFromService() throws SQLException {

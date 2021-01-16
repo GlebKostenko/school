@@ -1,13 +1,10 @@
 package com.foxminded.controller;
 
-import com.foxminded.dao.DataSource;
 import com.foxminded.service.StudentService;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.stream.Collectors;
 
 public class StudentController {

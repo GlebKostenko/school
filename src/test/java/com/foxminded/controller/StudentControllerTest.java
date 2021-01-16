@@ -14,11 +14,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 class StudentControllerTest {
-    StudentService studentService = mock(StudentService.class);
-    private StudentController studentController;
-    StudentControllerTest(){
-        studentController = new StudentController(studentService);
-    }
+    private StudentService studentService = mock(StudentService.class);
+    private StudentController studentController = new StudentController(studentService);
 
     @Test
     void removeStudentFromCourse_WhenTablesAreFilled_thenShouldBeOneCallWithoutErrors() {
